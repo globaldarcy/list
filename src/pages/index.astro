@@ -127,9 +127,6 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
-    main {
-        background-color: #6da7ff;
-    }
     #container {
         margin: 0 auto;
         max-width: 900px;
@@ -162,68 +159,58 @@ import Layout from '../layouts/Layout.astro';
 
 <script>
     function waterfall(grid, item, column) {
-        var containerWidth = document.getElementById('container').clientWidth;
-        var $grid = document.querySelector(grid);
-        var $item = Array.prototype.slice.call(document.querySelectorAll(item));
-        var $gap = window.getComputedStyle($grid).getPropertyValue('row-gap');
-        containerWidth = containerWidth - (column - 1) * parseFloat($gap);
+        const container = document.getElementById('container');
+        const containerWidth = container.clientWidth;
+        const $grid = document.querySelector(grid);
+        const $item = Array.from(document.querySelectorAll(item));
+        const $gap = window.getComputedStyle($grid).rowGap;
+
+        const gapValue = parseFloat($gap);
+        const adjustedContainerWidth = containerWidth - (column - 1) * gapValue;
 
         if ($item.length % column !== 0) {
-            for (let n = 0; n < column - ($item.length % column); n++) {
+            const additionalItemsNeeded = column - ($item.length % column);
+            for (let n = 0; n < additionalItemsNeeded; n++) {
                 const div = document.createElement('div');
-                div.classList.add('grid-item');
+                div.className = 'grid-item';
                 $grid.appendChild(div);
             }
         }
-        $item = document.querySelectorAll(item);
 
-        for (var i = 0; i < $item.length; i += column) {
-            var hightArray = new Array();
+        const updatedItems = Array.from(document.querySelectorAll(item));
+
+        for (let i = 0; i < updatedItems.length; i += column) {
+            const hightArray = [];
             let sumRatio = 0;
-            for (let j = i; j < i + column && j < $item.length; j++) {
-                var img = $item[j].querySelector('img');
-                if (img === null) {
-                    $item[j].style.setProperty('--ratio', 1.5);
-                } else {
-                    $item[j].style.setProperty('--ratio', img.naturalWidth / img.naturalHeight);
-                }
-                sumRatio += +$item[j].style.getPropertyValue('--ratio');
+            for (let j = i; j < i + column && j < updatedItems.length; j++) {
+                const img = updatedItems[j].querySelector('img');
+                const ratio = img ? img.naturalWidth / img.naturalHeight : 1.5;
+                updatedItems[j].style.setProperty('--ratio', ratio);
+                sumRatio += +updatedItems[j].style.getPropertyValue('--ratio');
             }
 
-            let widthRatio = containerWidth / sumRatio;
-            for (let k = i; k < i + column && k < $item.length; k++) {
-                $item[k].style.height = '';
-                $item[k].style.width = (widthRatio * +$item[k].style.getPropertyValue('--ratio')).toFixed(0) + 'px';
-                if ($item[k].querySelector('img') === null) {
-                    hightArray.push(1000);
-                } else {
-                    hightArray.push($item[k].querySelector('img').offsetHeight);
-                }
+            const widthRatio = adjustedContainerWidth / sumRatio;
+            for (let k = i; k < i + column && k < updatedItems.length; k++) {
+                updatedItems[k].style.height = '';
+                const width = (widthRatio * +updatedItems[k].style.getPropertyValue('--ratio')).toFixed(0) + 'px';
+                updatedItems[k].style.width = width;
+                const img = updatedItems[k].querySelector('img');
+                const height = img ? img.offsetHeight : 1000;
+                hightArray.push(height);
             }
 
-            var minHeight = Math.min.apply(null, hightArray);
-            for (let l = i; l < i + column && l < $item.length; l++) {
-                $item[l].style.height = minHeight.toFixed(0) + 'px';
+            const minHeight = Math.min(...hightArray);
+            for (let l = i; l < i + column && l < updatedItems.length; l++) {
+                updatedItems[l].style.height = minHeight.toFixed(0) + 'px';
             }
         }
-    }
-
-    function debounce(func, delay) {
-        let timer;
-        return function () {
-            clearTimeout(timer);
-            timer = setTimeout(func, delay);
-        };
     }
 
     document.addEventListener('DOMContentLoaded', function () {
         waterfall('.grid', '.grid-item', 3);
     });
 
-    window.addEventListener(
-        'resize',
-        debounce(function () {
-            waterfall('.grid', '.grid-item', 3);
-        }, 300)
-    );
+    window.addEventListener('resize', function () {
+        waterfall('.grid', '.grid-item', 3);
+    });
 </script>

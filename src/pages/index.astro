@@ -121,12 +121,47 @@ import Layout from '../layouts/Layout.astro';
                         <img src="http://res.jisuanke.com/img/upload/20160314/058f800eb82ae0555fa950500917b08491c8a5d6.jpeg" />
                     </div>
                 </div>
+                <div class="grid-item">
+                    <div class="pic">
+                        <img src="http://res.jisuanke.com/img/upload/20160314/b58cda8cbf922faab29e9ce380e5894d84630eae.jpeg" />
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="pic">
+                        <img src="http://res.jisuanke.com/img/upload/20160314/b58cda8cbf922faab29e9ce380e5894d84630eae.jpeg" />
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="pic">
+                        <img src="http://res.jisuanke.com/img/upload/20160314/b58cda8cbf922faab29e9ce380e5894d84630eae.jpeg" />
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="pic">
+                        <img src="http://res.jisuanke.com/img/upload/20160314/b58cda8cbf922faab29e9ce380e5894d84630eae.jpeg" />
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="pic">
+                        <img src="http://res.jisuanke.com/img/upload/20160314/b58cda8cbf922faab29e9ce380e5894d84630eae.jpeg" />
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="pic">
+                        <img src="http://res.jisuanke.com/img/upload/20160314/b58cda8cbf922faab29e9ce380e5894d84630eae.jpeg" />
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="pic">
+                        <img src="http://res.jisuanke.com/img/upload/20160314/b58cda8cbf922faab29e9ce380e5894d84630eae.jpeg" />
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 </Layout>
 
-<style>
+<style is:global>
     #container {
         margin: 0 auto;
         max-width: 900px;
@@ -137,7 +172,7 @@ import Layout from '../layouts/Layout.astro';
         display: flex;
         flex-wrap: wrap;
         /* gap: 10px; */
-        row-gap: 1vw;
+        row-gap: 0.3vw;
         justify-content: space-between;
     }
 
@@ -158,59 +193,93 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script>
-    function waterfall(grid, item, column) {
+    /**
+     * @param {string} grid
+     * @param {string} item
+     * @param {number} rHeight
+     * @param {number} rHeightTolerance
+     */
+    function justifiedLayout(grid, item, rHeight, rHeightTolerance) {
         const container = document.getElementById('container');
         const containerWidth = container.clientWidth;
         const $grid = document.querySelector(grid);
-        const $item = Array.from(document.querySelectorAll(item));
+        const $items = Array.from(document.querySelectorAll(item));
         const $gap = window.getComputedStyle($grid).rowGap;
 
         const gapValue = parseFloat($gap);
-        const adjustedContainerWidth = containerWidth - (column - 1) * gapValue;
 
-        if ($item.length % column !== 0) {
-            const additionalItemsNeeded = column - ($item.length % column);
-            for (let n = 0; n < additionalItemsNeeded; n++) {
+        const rowHeight = rHeight || 320;
+        const rowHeightTolerance = rHeightTolerance || 0.25;
+        const maxAspectRatio = (containerWidth / rowHeight) * (1 + rowHeightTolerance);
+
+        const updateItems = $items.filter((item) => {
+            const result = item.classList.contains('grid-item-empty');
+            if (result) {
+                item.remove();
+            }
+            return !result;
+        });
+
+        updateItems.forEach((item) => {
+            const img = item.querySelector('img');
+            const ratio = img ? img.naturalWidth / img.naturalHeight : 1.5;
+            item.style.setProperty('--ratio', ratio);
+        });
+        let sumRatio = 0;
+        let tempArray = [];
+        const ratioArray = [];
+        const rowArray = [];
+        updateItems.forEach((item) => {
+            let ratio = +item.style.getPropertyValue('--ratio');
+            sumRatio += ratio;
+            tempArray.push(item);
+
+            if (sumRatio > maxAspectRatio) {
+                ratioArray.push(sumRatio);
+                rowArray.push(tempArray);
+                sumRatio = 0;
+                tempArray = [];
+            }
+        });
+
+        if (tempArray.length > 0) {
+            while (sumRatio < maxAspectRatio) {
                 const div = document.createElement('div');
-                div.className = 'grid-item';
+                div.className = 'grid-item grid-item-empty';
+                div.style.setProperty('--ratio', '1.5');
                 $grid.appendChild(div);
+                tempArray.push(div);
+                sumRatio += 1.5;
             }
+            ratioArray.push(sumRatio);
+            rowArray.push(tempArray);
         }
 
-        const updatedItems = Array.from(document.querySelectorAll(item));
-
-        for (let i = 0; i < updatedItems.length; i += column) {
-            const hightArray = [];
-            let sumRatio = 0;
-            for (let j = i; j < i + column && j < updatedItems.length; j++) {
-                const img = updatedItems[j].querySelector('img');
-                const ratio = img ? img.naturalWidth / img.naturalHeight : 1.5;
-                updatedItems[j].style.setProperty('--ratio', ratio);
-                sumRatio += +updatedItems[j].style.getPropertyValue('--ratio');
-            }
-
-            const widthRatio = adjustedContainerWidth / sumRatio;
-            for (let k = i; k < i + column && k < updatedItems.length; k++) {
-                updatedItems[k].style.height = '';
-                const width = (widthRatio * +updatedItems[k].style.getPropertyValue('--ratio')).toFixed(0) + 'px';
-                updatedItems[k].style.width = width;
-                const img = updatedItems[k].querySelector('img');
-                const height = img ? img.offsetHeight : 1000;
-                hightArray.push(height);
-            }
-
-            const minHeight = Math.min(...hightArray);
-            for (let l = i; l < i + column && l < updatedItems.length; l++) {
-                updatedItems[l].style.height = minHeight.toFixed(0) + 'px';
-            }
-        }
+        rowArray.forEach((row, index) => {
+            const heightArray = [];
+            const adjustedContainerWidth = containerWidth - (row.length - 1) * gapValue;
+            const ratioItem = ratioArray[index] > maxAspectRatio ? ratioArray[index] : maxAspectRatio;
+            const widthRatio = adjustedContainerWidth / ratioItem;
+            row.forEach((item) => {
+                item.style.height = '';
+                const width = (widthRatio * +item.style.getPropertyValue('--ratio')).toFixed(0) + 'px';
+                item.style.width = width;
+                const img = item.querySelector('img');
+                const height = img ? img.offsetHeight : window.innerHeight;
+                heightArray.push(height);
+            });
+            const minHeight = Math.min(...heightArray);
+            row.forEach((item) => {
+                item.style.height = minHeight.toFixed(0) + 'px';
+            });
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        waterfall('.grid', '.grid-item', 3);
+        justifiedLayout('.grid', '.grid-item', 320, 0.45);
     });
 
     window.addEventListener('resize', function () {
-        waterfall('.grid', '.grid-item', 3);
+        justifiedLayout('.grid', '.grid-item', 320, 0.25);
     });
 </script>

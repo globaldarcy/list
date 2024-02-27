@@ -1,0 +1,122 @@
+---
+import Layout from '../layouts/sellLayout.astro';
+---
+
+<Layout title="Welcome to Astro.">
+    <main>
+        <div id="goods">
+            <div class="menu-wrapper">
+                <ul>
+                    <li class="menu-item current">
+                        <span class="text border-1px">
+                            <span class="icon"></span>
+                            热销榜
+                        </span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="text border-1px">
+                            <span class="icon special"></span>
+                            单人精彩套餐
+                        </span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="text border-1px">
+                            <span class="icon discount"></span>
+                            冰爽饮品限时特惠
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="foods-wrapper">
+                <ul>
+                    <li class="food-list food-list-hook">
+                        <h2 class="title">热销榜</h2>
+                        <ul></ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="shop-cart-group">
+                <div class="shop-cart">
+                    <div class="content">
+                        <div class="content-left">
+                            <div class="logo-wrapper">
+                                <div class="logo">
+                                    <span class="icon-shopping_cart"></span>
+                                </div>
+                                <div class="num">0</div>
+                            </div>
+                            <div class="price">$ 0 元</div>
+                            <div class="desc">另需配送费$ 4 元</div>
+                        </div>
+                        <div class="content-right"><div class="pay">$20元起送</div></div>
+                    </div>
+                    <div class="ball-container"></div>
+                    <div class="shopcat-list" style="display: none;">
+                        <div class="list-header">
+                            <h1 class="title">购物车</h1>
+                            <span class="empty">清空</span>
+                        </div>
+                        <div class="list-content"><ul></ul></div>
+                    </div>
+                </div>
+                <div class="list-mask" style="display: none;"></div>
+            </div>
+            <div id="food" style="display: none;">
+                <div class="food-content">
+                    <div class="image-header"><img alt="" /> <div class="back"><span class="icon-arrow_lift"></span></div></div>
+                    <div class="content"><h1 class="title"></h1> <div class="detail"><span class="sell-count">月售份</span> <span class="rating">好评率%</span></div> <div class="price"><span class="now">$</span><span class="old" style="display: none;">$</span></div> <div class="cartcontrol-wrapper"><div class="cart-control"><div class="cart-decrease" style="display: none;"><span class="inner icon-remove_circle_outline"></span></div> <div class="cart-count" style="display: none;"></div> <div class="cart-add icon-add_circle"></div></div></div> <div class="buy">加入购物车</div></div>
+                    <div class="split"></div>
+                    <div class="info" style="display: none;"><h1 class="title">商品信息</h1> <p class="text"></p></div>
+                    <div class="split"></div>
+                    <div class="rating"><h1 class="title">商品评价</h1> <div class="ratingselect"><div class="rating-type"><span class="block positive active">全部<span class="count">0</span></span> <span class="block positive">推荐<span class="count">0</span></span> <span class="block negative">吐槽<span class="count">0</span></span></div> <div class="switch"><span class="icon-check_circle"></span> <span class="text">只看有内容的评价</span></div></div> <div class="rating-wrapper"><ul style="display: none;"></ul> <div class="no-rating">暂无评价</div></div></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style is:global>
+    .food-item .cart-decrease,
+    .food-item .cart-count {
+        display: none;
+    }
+    .food-item.active .cart-decrease,
+    .food-item.active .cart-count {
+        display: inline-block;
+    }
+    .shop-cart .logo.animate {
+        animation: footer-car-ani 0.5s ease-in-out;
+    }
+
+    @keyframes footer-car-ani {
+        0% {
+            transform: scale(1);
+        }
+        25% {
+            transform: scale(0.8);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        75% {
+            transform: scale(0.9);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    .shop-cart-group .shop-cart .ball-container .ball {
+        position: fixed;
+        left: 10px;
+        top: 10px;
+        z-index: 200;
+        transition: transform 0.5s linear;
+    }
+    .shop-cart-group .shop-cart .ball-container .ball .inner {
+        transition: all 0.4s cubic-bezier(0.5, -0.5, 1, 0.99);
+    }
+</style>
+
+<script is:inline src="/js/data.js"></script>
+<script is:inline src="/js/sell.js"></script>
+<!-- <script is:inline src="../components/sell.js"></script> -->

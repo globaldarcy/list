@@ -258,4 +258,12 @@ ui.doms.goodsContainer.addEventListener('click', function (e) {
         var index = +e.target.dataset.index;
         ui.decrease(index);
     }
+});
+
+window.addEventListener('keydown', function (e) {
+    if (e.code === 'Equal') {
+        ui.increase(0);
+    } else if (e.code === 'Minus') {
+        ui.decrease(0);
+    }
 })

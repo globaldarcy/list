@@ -129,7 +129,10 @@ import Layout from '../layouts/Layout.astro';
             this.tempArray = [];
             this.sumRatio = 0;
 
-            this.getMaxAspectRatio();
+            this.ratioArray = [];
+            this.rowArray = [];
+
+            // this.getMaxAspectRatio();
         }
         getMaxAspectRatio() {
             const result = (this.doms.container.clientWidth / this.rowHeight) * (1 + this.rowHeightTolerance);
@@ -151,6 +154,9 @@ import Layout from '../layouts/Layout.astro';
         setImage(item) {
             return new Promise((resolve) => {
                 const img = item.querySelector('img');
+                // if (img === null) {
+                //     resolve(item);
+                // }
                 if (img.complete) {
                     var newItem = this.setItem(item, img);
                     resolve(newItem);
@@ -167,31 +173,55 @@ import Layout from '../layouts/Layout.astro';
             });
         }
         newItemList() {
-            this.itemArray = Array.from(this.doms.grid.querySelectorAll('.grid-item'));
-            const promises = this.itemArray.map(async (item) => {
-                console.log(item);
+            // this.itemArray = Array.from(this.doms.grid.querySelectorAll('.grid-item'));
+            this.doms.grid.querySelectorAll('.grid-item').forEach((item) => {
                 const empty = item.classList.contains('grid-item-empty');
                 if (empty) {
                     item.remove();
                 }
+            });
+            console.log(this.itemArray);
+            const promises = this.itemArray.map(async (item) => {
+                // console.log(item);
                 let result = await this.setImage(item);
                 return result;
             });
-
+            // console.log(promises);
+            // console.log(Promise.all(promises));
             return Promise.all(promises);
         }
         createRow(row) {
             if (row) {
                 this.tempArray.push(row);
             }
-
             if (this.sumRatio > this.getMaxAspectRatio()) {
+                this.ratioArray.push(this.sumRatio);
+                this.rowArray.push(this.tempArray);
+                this.sumRatio = 0;
+                this.tempArray = [];
+            }
+        }
+        lastRow() {
+            while (this.sumRatio < this.getMaxAspectRatio()) {
+                const div = document.createElement('div');
+                div.className = 'grid-item grid-item-empty';
+                div.dataset.ratio = 1.5;
+                this.doms.grid.appendChild(div);
+                this.tempArray.push(div);
+                this.sumRatio += 1.5;
+            }
+            this.ratioArray.push(this.sumRatio);
+            this.rowArray.push(this.tempArray);
+        }
+        renderRow() {
+            this.rowArray.forEach((rowItems, index) => {
                 const heightArray = [];
+                const adjustedContainerWidth = this.doms.container.clientWidth - (rowItems.length - 1) * this.gapValue;
+                const ratioItem = this.ratioArray[index] > this.getMaxAspectRatio() ? this.ratioArray[index] : this.getMaxAspectRatio();
+                const widthRatio = adjustedContainerWidth / ratioItem;
 
-                this.tempArray.forEach((item, index, array) => {
-                    const adjustedContainerWidth = this.doms.container.clientWidth - (array.length - 1) * this.gapValue;
-                    const ratioItem = this.sumRatio > this.getMaxAspectRatio() ? this.sumRatio : this.getMaxAspectRatio();
-                    const widthRatio = adjustedContainerWidth / ratioItem;
+                console.log(rowItems);
+                rowItems.forEach((item) => {
                     item.style.height = '';
                     const width = (widthRatio * +item.dataset.ratio).toFixed(0) + 'px';
                     item.style.width = width;
@@ -199,37 +229,30 @@ import Layout from '../layouts/Layout.astro';
                     const height = img ? img.offsetHeight : window.innerHeight;
                     heightArray.push(height);
                 });
+                console.log(heightArray);
                 const minHeight = Math.min(...heightArray);
-                this.tempArray.forEach((elem) => {
+                rowItems.forEach((elem) => {
                     elem.style.height = minHeight.toFixed(0) + 'px';
                 });
-
-                this.sumRatio = 0;
-                this.tempArray = [];
-            }
-        }
-        lastRow() {
-            if (this.tempArray.length > 0) {
-                while (this.sumRatio < this.getMaxAspectRatio()) {
-                    const div = document.createElement('div');
-                    div.className = 'grid-item grid-item-empty';
-                    div.dataset.ratio = 1.5;
-                    this.doms.grid.appendChild(div);
-                    this.tempArray.push(div);
-                    this.sumRatio += 1.5;
-                }
-            }
+            });
         }
         load() {
             this.newItemList().then((items) => {
+                console.log(items);
                 items.forEach((item) => {
                     if (item) {
                         this.sumRatio += +item.dataset.ratio;
                         this.createRow(item);
                     }
                 });
-                this.lastRow();
-                this.createRow();
+                if (this.tempArray.length > 0) {
+                    console.log('this.tempArray.length', this.tempArray.length);
+                    this.lastRow();
+                }
+                this.renderRow();
+
+                this.ratioArray = [];
+                this.rowArray = [];
             });
         }
     }
@@ -237,11 +260,6 @@ import Layout from '../layouts/Layout.astro';
     const imgLoader = new ImgLoader();
     // const init = imgLoader.load();
 
-    const doms = {
-        container: document.getElementById('container'),
-        grid: document.querySelector('.grid'),
-        itemList: document.querySelectorAll('.grid-item'),
-    };
     document.addEventListener('DOMContentLoaded', function () {
         imgLoader.load();
     });

@@ -110,200 +110,143 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script type="module">
-    class GridList {
-        constructor(grid) {
-            const imgData = [];
-            for (let index = 0; index < 48; index++) {
-                const imgUrl = 'img/hkbu-photos/' + (index + 1) + '.jpg';
-                imgData.push(imgUrl);
-            }
-            this.grid = document.querySelector(grid);
-            this.imgArray = imgData;
-        }
+    class ImgLoader {
+        constructor(rHeight, rHeightTolerance) {
+            this.doms = {
+                container: document.getElementById('container'),
+                grid: document.querySelector('.grid'),
+                // itemList: document.querySelectorAll('.grid-item'),
+            };
+            const gap = window.getComputedStyle(this.doms.grid).rowGap;
 
-        init() {
-            this.createHTML();
-        }
+            // this.doms.container.clientWidth = this.doms.container.clientWidth;
+            this.gapValue = parseFloat(gap);
+            this.itemArray = Array.from(this.doms.grid.querySelectorAll('.grid-item'));
 
-        createHTML() {
-            let html = '';
-            this.imgArray.forEach(function (item) {
+            this.rowHeight = rHeight || 320;
+            this.rowHeightTolerance = rHeightTolerance || 0.25;
+
+            this.tempArray = [];
+            this.sumRatio = 0;
+
+            this.getMaxAspectRatio();
+        }
+        getMaxAspectRatio() {
+            const result = (this.doms.container.clientWidth / this.rowHeight) * (1 + this.rowHeightTolerance);
+            // console.log(result);
+            return result;
+        }
+        setItem(item, img) {
+            const width = img.naturalWidth;
+            const height = img.naturalHeight;
+            item.dataset.ratio = width / height;
+            return item;
+        }
+        setRatio(img) {
+            const width = img.naturalWidth;
+            const height = img.naturalHeight;
+            const ratio = width / height;
+            return ratio;
+        }
+        setImage(item) {
+            return new Promise((resolve) => {
+                const img = item.querySelector('img');
+                if (img.complete) {
+                    var newItem = this.setItem(item, img);
+                    resolve(newItem);
+                } else {
+                    img.addEventListener('load', () => {
+                        var newItem = this.setItem(item, img);
+                        resolve(newItem);
+                    });
+                    img.addEventListener('error', () => {
+                        item.remove();
+                        resolve(null);
+                    });
+                }
+            });
+        }
+        newItemList() {
+            this.itemArray = Array.from(this.doms.grid.querySelectorAll('.grid-item'));
+            const promises = this.itemArray.map(async (item) => {
                 console.log(item);
-                html += `<div class="grid-item">
-                    <div class="pic">
-                        <img src="https://www.hkbu.edu.hk/en${item}" />
-                    </div>
-                </div>`;
+                const empty = item.classList.contains('grid-item-empty');
+                if (empty) {
+                    item.remove();
+                }
+                let result = await this.setImage(item);
+                return result;
             });
-            this.grid.innerHTML = html;
-        }
-    }
 
-    // var gridList = new GridList('.grid');
-    // gridList.init();
-
-    class ImageLoader {
-        constructor(itemArray) {
-            this.itemArray = itemArray;
-        }
-        load() {
-            const promises = this.itemArray.map((item, index) => {
-                return new Promise((resolve) => {
-                    const img = item.querySelector('img');
-                    if (img.complete) {
-                        const width = img.naturalWidth;
-                        const height = img.naturalHeight;
-                        item.style.setProperty('--ratio', width / height);
-                        item.classList.add('loaded');
-                        resolve(item);
-                    } else {
-                        img.addEventListener('load', () => {
-                            const width = img.naturalWidth;
-                            const height = img.naturalHeight;
-                            item.style.setProperty('--ratio', width / height);
-                            item.classList.add('loaded-' + index);
-                            resolve(item);
-                        });
-                        img.addEventListener('error', () => {
-                            item.remove()
-                            resolve(null);
-                        });
-                    }
-                });
-            });
             return Promise.all(promises);
         }
-    }
-
-    /**
-     * @param {string} grid
-     * @param {string} item
-     * @param {number} rHeight
-     * @param {number} rHeightTolerance
-     */
-    function justifiedLayout(grid, item, rHeight, rHeightTolerance) {
-        const container = document.getElementById('container');
-        const containerWidth = container.clientWidth;
-        const $grid = document.querySelector(grid);
-        const $items = Array.from(document.querySelectorAll(item));
-        const $gap = window.getComputedStyle($grid).rowGap;
-
-        const gapValue = parseFloat($gap);
-
-        const rowHeight = rHeight || 320;
-        const rowHeightTolerance = rHeightTolerance || 0.25;
-        const maxAspectRatio = (containerWidth / rowHeight) * (1 + rowHeightTolerance);
-
-        let sumRatio = 0;
-        let tempArray = [];
-        const ratioArray = [];
-        const rowArray = [];
-
-        const updateItems = $items.filter((item) => {
-            const result = item.classList.contains('grid-item-empty');
-            if (result) {
-                item.remove();
-            }
-            return !result;
-        });
-
-        const imageLoader = new ImageLoader(updateItems);
-        imageLoader.load().then((items) => {
-            items.forEach((item) => {
-                if (item === null) {
-                    return false;
-                }
-                let ratio = +item.style.getPropertyValue('--ratio');
-                sumRatio += ratio;
-                tempArray.push(item);
-
-                if (sumRatio > maxAspectRatio) {
-                    ratioArray.push(sumRatio);
-                    rowArray.push(tempArray);
-                    sumRatio = 0;
-                    tempArray = [];
-                }
-            });
-            if (tempArray.length > 0) {
-                while (sumRatio < maxAspectRatio) {
-                    const div = document.createElement('div');
-                    div.className = 'grid-item grid-item-empty';
-                    div.style.setProperty('--ratio', '1.5');
-                    $grid.appendChild(div);
-                    tempArray.push(div);
-                    sumRatio += 1.5;
-                }
-                ratioArray.push(sumRatio);
-                rowArray.push(tempArray);
+        createRow(row) {
+            if (row) {
+                this.tempArray.push(row);
             }
 
-            rowArray.forEach((row, index) => {
+            if (this.sumRatio > this.getMaxAspectRatio()) {
                 const heightArray = [];
-                const adjustedContainerWidth = containerWidth - (row.length - 1) * gapValue;
-                const ratioItem = ratioArray[index] > maxAspectRatio ? ratioArray[index] : maxAspectRatio;
-                const widthRatio = adjustedContainerWidth / ratioItem;
-                row.forEach((item) => {
+
+                this.tempArray.forEach((item, index, array) => {
+                    const adjustedContainerWidth = this.doms.container.clientWidth - (array.length - 1) * this.gapValue;
+                    const ratioItem = this.sumRatio > this.getMaxAspectRatio() ? this.sumRatio : this.getMaxAspectRatio();
+                    const widthRatio = adjustedContainerWidth / ratioItem;
                     item.style.height = '';
-                    const width = (widthRatio * +item.style.getPropertyValue('--ratio')).toFixed(0) + 'px';
+                    const width = (widthRatio * +item.dataset.ratio).toFixed(0) + 'px';
                     item.style.width = width;
                     const img = item.querySelector('img');
                     const height = img ? img.offsetHeight : window.innerHeight;
                     heightArray.push(height);
                 });
                 const minHeight = Math.min(...heightArray);
-                row.forEach((item) => {
-                    item.style.height = minHeight.toFixed(0) + 'px';
+                this.tempArray.forEach((elem) => {
+                    elem.style.height = minHeight.toFixed(0) + 'px';
                 });
+
+                this.sumRatio = 0;
+                this.tempArray = [];
+            }
+        }
+        lastRow() {
+            if (this.tempArray.length > 0) {
+                while (this.sumRatio < this.getMaxAspectRatio()) {
+                    const div = document.createElement('div');
+                    div.className = 'grid-item grid-item-empty';
+                    div.dataset.ratio = 1.5;
+                    this.doms.grid.appendChild(div);
+                    this.tempArray.push(div);
+                    this.sumRatio += 1.5;
+                }
+            }
+        }
+        load() {
+            this.newItemList().then((items) => {
+                items.forEach((item) => {
+                    if (item) {
+                        this.sumRatio += +item.dataset.ratio;
+                        this.createRow(item);
+                    }
+                });
+                this.lastRow();
+                this.createRow();
             });
-        });
-
-        // const updateItems = $items.filter((item) => {
-        //     const result = item.classList.contains('grid-item-empty');
-        //     if (result) {
-        //         item.remove();
-        //     }
-        //     return !result;
-        // });
-
-        // updateItems.forEach((item) => {
-        //     const img = item.querySelector('img');
-        //     img.addEventListener('load', function () {
-        //         var width = img.naturalWidth;
-        //         var height = img.naturalHeight;
-        //         var ratio = img ? width / height : 1.5;
-        //         item.style.setProperty('--ratio', ratio);
-        //         sumRatio += ratio;
-        //         tempArray.push(item);
-
-        //         if (sumRatio > maxAspectRatio) {
-        //             ratioArray.push(sumRatio);
-        //             rowArray.push(tempArray);
-        //             sumRatio = 0;
-        //             tempArray = [];
-        //         }
-        //     });
-        // });
-
-        // updateItems.forEach((item) => {
-        //     let ratio = +item.style.getPropertyValue('--ratio');
-        //     console.log(ratio);
-        //     sumRatio += ratio;
-        //     tempArray.push(item);
-
-        //     if (sumRatio > maxAspectRatio) {
-        //         ratioArray.push(sumRatio);
-        //         rowArray.push(tempArray);
-        //         sumRatio = 0;
-        //         tempArray = [];
-        //     }
-        // });
+        }
     }
 
+    const imgLoader = new ImgLoader();
+    // const init = imgLoader.load();
+
+    const doms = {
+        container: document.getElementById('container'),
+        grid: document.querySelector('.grid'),
+        itemList: document.querySelectorAll('.grid-item'),
+    };
     document.addEventListener('DOMContentLoaded', function () {
-        justifiedLayout('.grid', '.grid-item', 320, 0.45);
+        imgLoader.load();
     });
 
     window.addEventListener('resize', function () {
-        justifiedLayout('.grid', '.grid-item', 320, 0.45);
+        imgLoader.load();
     });
 </script>

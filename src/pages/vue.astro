@@ -1,0 +1,115 @@
+---
+import Layout from '../layouts/sellLayout.astro';
+---
+
+<Layout title="框架-vue从入门到手撕">
+    <main>
+        <div class="container jc-container">
+            <h1 class="head">惊喜商城</h1>
+            <div class="list">
+                <div class="list-item active">
+                    <div class="title">荣耀X30</div>
+                    <div class="cart-control">
+                        <div class="cart-decrease">
+                            <span data-index="0" class="inner icon-remove_circle_outline"></span>
+                        </div>
+                        <div class="cart-count">0</div>
+                        <div data-index="0" class="cart-add icon-add_circle"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="car">
+                    <i class="icon-shopping_cart highlight"></i>
+                    <span class="badge">0</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style is:global>
+    .food-item .cart-decrease,
+    .food-item .cart-count {
+        display: none;
+    }
+    .food-item.active .cart-decrease,
+    .food-item.active .cart-count {
+        display: inline-block;
+    }
+    .jc-container {
+        position: relative;
+        margin: 50px auto;
+        max-width: 500px;
+        padding: 50px 0 50px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+    }
+    .jc-container .head {
+        font-size: 36px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .jc-container .list {
+        padding: 0 50px;
+    }
+    .jc-container .list-item {
+        display: flex;
+        align-items: center;
+        padding: 20px 0;
+    }
+    .jc-container .title {
+        flex: 1;
+    }
+    .jc-container .cart-control {
+        width: 90px;
+    }
+    .jc-container .footer {
+        padding-top: 50px;
+        text-align: center;
+    }
+    .jc-container .footer .car {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #333;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+    }
+    .jc-container .footer i {
+        font-size: 50px;
+    }
+    .jc-container .footer .badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: #f00;
+        color: #fff;
+        text-align: center;
+        line-height: 25px;
+        font-size: 12px;
+    }
+</style>
+
+<script is:inline src="/js/vue-data.js"></script>
+<script is:inline src="/js/vue.js"></script>
+<script type="module">
+    var vm = new Vue({
+        el: '.container',
+        data: {
+            list: [
+                {
+                    title: '荣耀X30',
+                    count: 0
+                }
+            ]
+        }
+    });
+    console.log(vm);
+</script>

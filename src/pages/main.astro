@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="V1 Photo Justified Layout">
     <main>
         <div id="container">
             <div class="grid">
@@ -105,7 +105,7 @@ import Layout from '../layouts/Layout.astro';
     #container {
         margin: 0 auto;
         max-width: 900px;
-        padding: 150px 0;
+        padding: 80px 0 150px;
     }
     .grid {
         position: relative;
@@ -154,7 +154,7 @@ import Layout from '../layouts/Layout.astro';
             let sumRatio = 0;
             for (let j = i; j < i + column && j < updatedItems.length; j++) {
                 const img = updatedItems[j].querySelector('img');
-                console.log(img.naturalWidth, img.naturalHeight);
+                // console.log(img.naturalWidth, img.naturalHeight);
                 const ratio = img ? img.naturalWidth / img.naturalHeight : 1.5;
                 updatedItems[j].style.setProperty('--ratio', ratio);
                 sumRatio += +updatedItems[j].style.getPropertyValue('--ratio');

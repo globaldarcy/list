@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="音乐播放器">
+    <main>
+        <audio controls src="/media/music.mp3"></audio>
+        <div class="container">
+            <ul></ul>
+        </div>
+    </main>
+</Layout>
+
+<style is:global>
+    body {
+        background: #000;
+        color: #666;
+        text-align: center;
+        font: 'Lucida Grande', Helvetica, Arial, sans-serif;
+        font-size: 16px;
+    }
+
+    audio {
+        width: 450px;
+        margin: 30px 0;
+    }
+
+    .container {
+        height: 420px;
+        overflow: hidden;
+    }
+    ul {
+        transition: 0.5s;
+        list-style: none;
+    }
+    li {
+        height: 30px;
+        line-height: 30px;
+        transition: transform 0.2s;
+        font-size: 20px;
+    }
+    li.active {
+        color: #fff;
+        transform: scale(1.2);
+    }
+</style>
+
+<script is:inline src="/js/lrc.js"></script>
+<script type="module">
+    // console.log(lrc);
+    /**
+     * 解析歌词字符串
+     * 得到一个歌词对象的数组
+     * 每个歌词对象：{time: 开始事件, words: 歌词内容}
+     * @return {Array}
+     */
+    function parseLrc() {
+        var lines = lrc.split('\n');
+        const result = [];
+        for (let i = 0; i < lines.length; i++) {
+            const str = lines[i];
+            const parts = str.split(']');
+            const timeStr = parts[0].substring(1);
+            const obj = {
+                time: parseTime(timeStr),
+                words: parts[1],
+            };
+            result.push(obj);
+        }
+        return result;
+    }
+
+    /**
+     * 解析时间字符串
+     * @param {string} timeStr
+     * @return {number}
+     */
+    function parseTime(timeStr) {
+        const parts = timeStr.split(':');
+        return Number(parts[0]) * 60 + Number(parts[1]);
+    }
+
+    var lyric = parseLrc();
+
+    var doms = {
+        audio: document.querySelector('audio'),
+        ul: document.querySelector('ul'),
+        container: document.querySelector('.container'),
+    };
+
+    /**
+     * 查找歌词索引
+     * @return {number}
+     * -1: 0秒不显示歌词
+     *
+     */
+
+    function findLrcIndex() {
+        var curTime = doms.audio.currentTime;
+        for (let i = 0; i < lyric.length; i++) {
+            if (curTime < lyric[i].time) {
+                return i - 1;
+            }
+        }
+        return lyric.length - 1;
+    }
+    /**
+     * 创建歌词
+     */
+    function createLreElement() {
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < lyric.length; i++) {
+            const li = document.createElement('li');
+            li.textContent = lyric[i].words;
+            fragment.appendChild(li);
+        }
+        doms.ul.appendChild(fragment);
+    }
+
+    createLreElement();
+
+    const containerHeight = doms.container.clientHeight;
+    const liHeight = doms.ul.children[0].clientHeight;
+    // 最大偏移
+    const maxOffset = doms.ul.clientHeight - containerHeight;
+
+    function setOffset() {
+        let index = findLrcIndex();
+        let offset = liHeight * index + liHeight / 2 - containerHeight / 2;
+        if (offset < 0) {
+            offset = 0;
+        }
+        if (offset > maxOffset) {
+            offset = maxOffset;
+        }
+        doms.ul.style.transform = `translateY(-${offset}px)`;
+
+        const active = doms.ul.querySelector('.active');
+        if (active) {
+            active.classList.remove('active');
+        }
+        if (index > -1) {
+            doms.ul.children[index].classList.add('active');
+        }
+    }
+
+    doms.audio.addEventListener('timeupdate', setOffset);
+</script>

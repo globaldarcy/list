@@ -138,7 +138,7 @@ class UI {
         var html = '';
         for (let i = 0; i < this.uiData.uiGoods.length; i++) {
             var g = this.uiData.uiGoods[i];
-            console.log(g);
+            // console.log(g);
             html += `<li class="food-item border-1px">
                 <div class="icon">
                     <img width="57" height="57" src="${g.data.image}" alt="" />

@@ -10,7 +10,7 @@ import Layout from '../layouts/Layout.astro';
                     <img src="https://www.hkbu.edu.hk/content/dam/hongkongbaptistuniversity/hkbu-assets/photo-gallery/events/2018/1109/DSC_0100.jpg/jcr:content/renditions/cq5dam.thumbnail.319.319.png" />
                 </div>
                 <div class="grid-item">
-                    <img src="https://www.hkbu.edu.hk/content/dam/hongkongbaptistuniversity/hkbu-assets/photo-gallery/events/2018/1109/CW0W3077.jpg/jcr:content/renditions/cq5dam.thumbnail.319.319.png" />
+                    <img src="https://www.hkbu.edu.hk/content/dam/hongkongbaptistuniversity/hkbu-assets/photo-gallery/events/2018/1109/CW0W3077-1.jpg/jcr:content/renditions/cq5dam.thumbnail.319.319.png" />
                 </div>
                 <div class="grid-item">
                     <img src="https://www.hkbu.edu.hk/content/dam/hongkongbaptistuniversity/hkbu-assets/photo-gallery/events/2018/1109/668A2459.jpg/jcr:content/renditions/cq5dam.thumbnail.319.319.png" />
@@ -115,11 +115,9 @@ import Layout from '../layouts/Layout.astro';
             this.doms = {
                 container: document.getElementById('container'),
                 grid: document.querySelector('.grid'),
-                // itemList: document.querySelectorAll('.grid-item'),
             };
             const gap = window.getComputedStyle(this.doms.grid).rowGap;
 
-            // this.doms.container.clientWidth = this.doms.container.clientWidth;
             this.gapValue = parseFloat(gap);
             this.itemArray = Array.from(this.doms.grid.querySelectorAll('.grid-item'));
 
@@ -131,12 +129,9 @@ import Layout from '../layouts/Layout.astro';
 
             this.ratioArray = [];
             this.rowArray = [];
-
-            // this.getMaxAspectRatio();
         }
         getMaxAspectRatio() {
             const result = (this.doms.container.clientWidth / this.rowHeight) * (1 + this.rowHeightTolerance);
-            // console.log(result);
             return result;
         }
         setItem(item, img) {
@@ -154,12 +149,14 @@ import Layout from '../layouts/Layout.astro';
         setImage(item) {
             return new Promise((resolve) => {
                 const img = item.querySelector('img');
-                // if (img === null) {
-                //     resolve(item);
-                // }
                 if (img.complete) {
-                    var newItem = this.setItem(item, img);
-                    resolve(newItem);
+                    if (img.naturalWidth === 0) {
+                        item.remove();
+                        resolve(null);
+                    } else {
+                        resolve(item);
+                    }
+
                 } else {
                     img.addEventListener('load', () => {
                         var newItem = this.setItem(item, img);
@@ -173,21 +170,16 @@ import Layout from '../layouts/Layout.astro';
             });
         }
         newItemList() {
-            // this.itemArray = Array.from(this.doms.grid.querySelectorAll('.grid-item'));
             this.doms.grid.querySelectorAll('.grid-item').forEach((item) => {
                 const empty = item.classList.contains('grid-item-empty');
                 if (empty) {
                     item.remove();
                 }
             });
-            console.log(this.itemArray);
             const promises = this.itemArray.map(async (item) => {
-                // console.log(item);
                 let result = await this.setImage(item);
                 return result;
             });
-            // console.log(promises);
-            // console.log(Promise.all(promises));
             return Promise.all(promises);
         }
         createRow(row) {
@@ -220,7 +212,6 @@ import Layout from '../layouts/Layout.astro';
                 const ratioItem = this.ratioArray[index] > this.getMaxAspectRatio() ? this.ratioArray[index] : this.getMaxAspectRatio();
                 const widthRatio = adjustedContainerWidth / ratioItem;
 
-                console.log(rowItems);
                 rowItems.forEach((item) => {
                     item.style.height = '';
                     const width = (widthRatio * +item.dataset.ratio).toFixed(0) + 'px';
@@ -229,7 +220,7 @@ import Layout from '../layouts/Layout.astro';
                     const height = img ? img.offsetHeight : window.innerHeight;
                     heightArray.push(height);
                 });
-                console.log(heightArray);
+
                 const minHeight = Math.min(...heightArray);
                 rowItems.forEach((elem) => {
                     elem.style.height = minHeight.toFixed(0) + 'px';
@@ -238,7 +229,6 @@ import Layout from '../layouts/Layout.astro';
         }
         load() {
             this.newItemList().then((items) => {
-                console.log(items);
                 items.forEach((item) => {
                     if (item) {
                         this.sumRatio += +item.dataset.ratio;
@@ -246,9 +236,10 @@ import Layout from '../layouts/Layout.astro';
                     }
                 });
                 if (this.tempArray.length > 0) {
-                    console.log('this.tempArray.length', this.tempArray.length);
                     this.lastRow();
                 }
+                this.tempArray = [];
+                this.sumRatio = 0;
                 this.renderRow();
 
                 this.ratioArray = [];

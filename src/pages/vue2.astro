@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/sellLayout.astro';
+---
+
+<Layout title="框架-vue从入门到手撕">
+    <main>
+        <div class="card">
+            <p id="firstName"></p>
+            <p id="lastName"></p>
+            <p id="age"></p>
+        </div>
+    </main>
+</Layout>
+
+<style is:global>
+    .card {
+        position: relative;
+        margin: 50px auto;
+        max-width: 500px;
+        padding: 50px 30px;
+        border: 1px solid #1a1a1a;
+        border-radius: 10px;
+        background-color: #38cae4;
+    }
+    p {
+        margin: 20px 0;
+        font-size: 36px;
+        color: #fff;
+    }
+</style>
+
+<script is:inline src="/js/euv.js"></script>
+<script is:inline>
+    var user = {
+        name: '张三',
+        age: 20
+    }
+
+    observe(user);
+
+    function showFirstName() {
+        document.querySelector('#firstName').textContent = '姓： ' + user.name[0]
+    }
+
+    function showLastName() {
+        document.querySelector('#lastName').textContent = '名： ' + user.name.slice(1)
+    }
+
+    function showage() {
+        document.querySelector('#age').textContent = '年龄： ' + user.age
+    }
+
+    // showFirstName()
+    // showLastName()
+    // showage()
+    autorun(showFirstName)
+    autorun(showLastName)
+    autorun(showage)
+
+    user.name = '李四';
+</script>

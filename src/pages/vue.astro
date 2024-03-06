@@ -4,24 +4,24 @@ import Layout from '../layouts/sellLayout.astro';
 
 <Layout title="框架-vue从入门到手撕">
     <main>
-        <div class="container jc-container">
-            <h1 class="head">惊喜商城</h1>
+        <div id="app" class="container jc-container">
+            <h1 class="head" v-text="title"></h1>
             <div class="list">
-                <div class="list-item active">
-                    <div class="title">荣耀X30</div>
+                <div v-for="(item, index) in goods" :key="index" class="list-item" :class="{active: item.choose>0}">
+                    <div class="title" v-text="item.name"></div>
                     <div class="cart-control">
                         <div class="cart-decrease">
-                            <span data-index="0" class="inner icon-remove_circle_outline"></span>
+                            <span @click="item.choose--" class="inner icon-remove_circle_outline"></span>
                         </div>
-                        <div class="cart-count">0</div>
-                        <div data-index="0" class="cart-add icon-add_circle"></div>
+                        <div class="cart-count" v-text="item.choose"></div>
+                        <div @click="item.choose++" class="cart-add icon-add_circle"></div>
                     </div>
                 </div>
             </div>
             <div class="footer">
-                <div class="car">
+                <div class="car"  :class="{active: count>0}">
                     <i class="icon-shopping_cart highlight"></i>
-                    <span class="badge">0</div>
+                    <span class="badge" v-text="count">0</span>
                 </div>
             </div>
         </div>
@@ -29,12 +29,12 @@ import Layout from '../layouts/sellLayout.astro';
 </Layout>
 
 <style is:global>
-    .food-item .cart-decrease,
-    .food-item .cart-count {
+    .list-item .cart-decrease,
+    .list-item .cart-count {
         display: none;
     }
-    .food-item.active .cart-decrease,
-    .food-item.active .cart-count {
+    .list-item.active .cart-decrease,
+    .list-item.active .cart-count {
         display: inline-block;
     }
     .jc-container {
@@ -63,6 +63,7 @@ import Layout from '../layouts/sellLayout.astro';
     }
     .jc-container .cart-control {
         width: 90px;
+        text-align: right;
     }
     .jc-container .footer {
         padding-top: 50px;
@@ -78,6 +79,9 @@ import Layout from '../layouts/sellLayout.astro';
         align-items: center;
         justify-content: center;
         color: #fff;
+    }
+    .jc-container .footer .car.active {
+        background-color: #00a0dc;
     }
     .jc-container .footer i {
         font-size: 50px;
@@ -101,15 +105,20 @@ import Layout from '../layouts/sellLayout.astro';
 <script is:inline src="/js/vue.js"></script>
 <script type="module">
     var vm = new Vue({
-        el: '.container',
+        el: '#app',
         data: {
-            list: [
-                {
-                    title: '荣耀X30',
-                    count: 0
+            title: '惊喜商城',
+            goods: goods,
+        },
+        computed: {
+            count: function () {
+                var sum = 0;
+                for (let i = 0; i < this.goods.length; i++) {
+                    sum += this.goods[i].choose;
                 }
-            ]
-        }
+                return sum
+            },
+        },
     });
     console.log(vm);
 </script>

@@ -1,0 +1,226 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="音乐播放器">
+    <main>
+        <div class="container">
+            <select class="custom-select">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+            </select>
+        </div>
+        <div class="container">
+            <select class="custom-select">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+            </select>
+        </div>
+        <div class="container">
+            <select class="custom-select">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+            </select>
+        </div>
+    </main>
+</Layout>
+
+<style is:global>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    .container {
+        margin: 50px auto;
+        width: 800px;
+    }
+    /* 隐藏原生的 select 元素 */
+    .custom-select {
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        font-family: inherit;
+        font-size: inherit;
+        cursor: inherit;
+        line-height: inherit;
+    }
+
+    /* 自定义的 select 样式 */
+    .create-select {
+        position: relative;
+        display: inline-block;
+        background-color: #f2f2f2;
+        border: 1px solid #2c5aa0;
+        cursor: pointer;
+    }
+
+    .create-select span {
+        position: relative;
+        display: block;
+        padding: 10px 30px 10px 10px;
+        color: #2c5aa0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .create-select span::after {
+        pointer-events: none;
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #2c5aa0;
+    }
+
+    .create-options {
+        display: none;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        z-index: 1;
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: calc(100% + 5px);
+        padding: 5px;
+        background-color: #f2f2f2;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .create-options > li {
+        padding: 0.5em 0;
+        cursor: pointer;
+    }
+
+    .create-options > li:hover {
+        background-color: #e6e6e6;
+    }
+</style>
+
+<script is:inline>
+    /*
+    const selectElement = document.getElementById('mySelect');
+    const customSelect = document.createElement('div');
+    const customSelectOptions = document.createElement('ul');
+
+    customSelect.classList.add('custom-select');
+    customSelectOptions.classList.add('custom-select-options');
+
+    // 创建自定义的选项
+    for (const option of selectElement.options) {
+        const customOption = document.createElement('li');
+        customOption.textContent = option.textContent;
+        customOption.dataset.value = option.value;
+        customOption.addEventListener('click', handleOptionClick);
+        customSelectOptions.appendChild(customOption);
+    }
+
+    // 显示自定义的选项
+    customSelect.addEventListener('click', () => {
+        customSelectOptions.style.display = customSelectOptions.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // 选择选项时的处理函数
+    function handleOptionClick(event) {
+        const selectedValue = event.target.dataset.value;
+        customSelect.textContent = event.target.textContent;
+        selectElement.value = selectedValue;
+        customSelectOptions.style.display = 'none';
+    }
+
+    // 初始化自定义 select
+    customSelect.textContent = selectElement.options[selectElement.selectedIndex].textContent;
+    // selectElement.style.display = 'none';
+    selectElement.parentNode.insertBefore(customSelect, selectElement.nextSibling);
+    customSelect.appendChild(customSelectOptions);
+ */
+    class CustomSelect {
+        constructor(selectDom) {
+            this.doms = {
+                // customSelect: select.querySelector(select),
+                selectElements: document.querySelectorAll(selectDom),
+                select: document.createElement('div'),
+                span: document.createElement('span'),
+                ul: document.createElement('ul'),
+                // customSelectOptions: document.querySelector('.custom-select-options'),
+            };
+            this.index = 0;
+
+            const selectElements = Array.from(this.doms.selectElements);
+            console.log(selectElements);
+            selectElements.forEach((selectElement, index) => {
+                console.log(selectElement);
+                this.createSelect(selectElement);
+                this.changeOption();
+            });
+        }
+
+        createSelect(selectElement) {
+            let { select, span, ul } = this.doms;
+            select = document.createElement('div');
+            select.classList.add('create-select');
+
+            span = document.createElement('span');
+            span.classList.add('current-option');
+            span.textContent = selectElement.options[selectElement.selectedIndex].textContent;
+
+            select.appendChild(span);
+
+            const fragment = new DocumentFragment();
+            ul = document.createElement('ul');
+            ul.classList.add('create-options');
+
+            for (const option of selectElement.options) {
+                const li = document.createElement('li');
+                li.textContent = option.textContent;
+                li.dataset.value = option.value;
+                li.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    this.chooseOption(event, selectElement);
+                });
+                fragment.appendChild(li);
+            }
+            ul.appendChild(fragment);
+            select.appendChild(ul);
+            console.log(selectElement.parentNode);
+            selectElement.parentNode.appendChild(select);
+        }
+
+        chooseOption(event, selectElement) {
+            const { span, ul } = this.doms;
+            const selectedValue = event.target.dataset.value;
+            span.textContent = event.target.textContent;
+            selectElement.value = selectedValue;
+            ul.style.display = 'none';
+        }
+
+        changeOption() {
+            const { select, ul } = this.doms;
+            select.addEventListener('click', function (event) {
+                event.stopPropagation();
+                ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
+            });
+            document.addEventListener('click', function (event) {
+                event.stopPropagation();
+                ul.style.display = 'none';
+            });
+        }
+    }
+
+    var sel = new CustomSelect('.custom-select');
+</script>

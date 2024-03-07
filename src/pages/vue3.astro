@@ -29,33 +29,37 @@ import Layout from '../layouts/sellLayout.astro';
     }
 </style>
 
-<script is:inline src="./js/euv.js"></script>
+<script is:inline src="./js/reactive-system.js"></script>
 <script is:inline>
-    var user = {
+    const user = reactive({
         name: '张三',
-        age: 20
-    }
-
-    observe(user);
+        age: 20,
+    });
 
     function showFirstName() {
-        document.querySelector('#firstName').textContent = '姓： ' + user.name[0]
+        document.querySelector('#firstName').textContent = '姓： ' + user.name[0];
     }
 
     function showLastName() {
-        document.querySelector('#lastName').textContent = '名： ' + user.name.slice(1)
+        document.querySelector('#lastName').textContent = '名： ' + user.name.slice(1);
     }
 
     function showage() {
-        document.querySelector('#age').textContent = '年龄： ' + user.age
+        document.querySelector('#age').textContent = '年龄： ' + user.age;
     }
 
-    // showFirstName()
-    // showLastName()
-    // showage()
-    autorun(showFirstName)
-    autorun(showLastName)
-    autorun(showage)
+    effect(showFirstName);
+    effect(showLastName);
+    effect(showage);
+    // effect(() => {
+    //     showFirstName();
+    //     showLastName();
+    //     showage();
+    // });
+    for (let i = 0; i < array.length; i++) {
+        const data = array[i];
+        console.log(data, '123')
+    }
 
     user.name = '李四';
 </script>

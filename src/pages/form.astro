@@ -2,28 +2,48 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="音乐播放器">
+<Layout title="Form">
     <main>
         <div class="container">
-            <select class="custom-select">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-            </select>
+            <div class="custom-select">
+                <select>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
         </div>
         <div class="container">
-            <select class="custom-select">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-            </select>
+            <div class="custom-select">
+                <select>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
         </div>
         <div class="container">
-            <select class="custom-select">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-            </select>
+            <div class="custom-select">
+                <select>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
+            <div class="custom-select">
+                <select>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
+            <div class="custom-select">
+                <select>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
         </div>
     </main>
 </Layout>
@@ -85,6 +105,10 @@ import Layout from '../layouts/Layout.astro';
         border-top: 5px solid #2c5aa0;
     }
 
+    .create-select span.show::after {
+        transform: translateY(-50%) rotate(180deg);
+    }
+
     .create-options {
         display: none;
         list-style: none;
@@ -102,6 +126,10 @@ import Layout from '../layouts/Layout.astro';
         overflow-y: auto;
     }
 
+    .create-options.show {
+        display: block;
+    }
+
     .create-options > li {
         padding: 0.5em 0;
         cursor: pointer;
@@ -113,111 +141,86 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script is:inline>
-    /*
-    const selectElement = document.getElementById('mySelect');
-    const customSelect = document.createElement('div');
-    const customSelectOptions = document.createElement('ul');
-
-    customSelect.classList.add('custom-select');
-    customSelectOptions.classList.add('custom-select-options');
-
-    // 创建自定义的选项
-    for (const option of selectElement.options) {
-        const customOption = document.createElement('li');
-        customOption.textContent = option.textContent;
-        customOption.dataset.value = option.value;
-        customOption.addEventListener('click', handleOptionClick);
-        customSelectOptions.appendChild(customOption);
-    }
-
-    // 显示自定义的选项
-    customSelect.addEventListener('click', () => {
-        customSelectOptions.style.display = customSelectOptions.style.display === 'none' ? 'block' : 'none';
-    });
-
-    // 选择选项时的处理函数
-    function handleOptionClick(event) {
-        const selectedValue = event.target.dataset.value;
-        customSelect.textContent = event.target.textContent;
-        selectElement.value = selectedValue;
-        customSelectOptions.style.display = 'none';
-    }
-
-    // 初始化自定义 select
-    customSelect.textContent = selectElement.options[selectElement.selectedIndex].textContent;
-    // selectElement.style.display = 'none';
-    selectElement.parentNode.insertBefore(customSelect, selectElement.nextSibling);
-    customSelect.appendChild(customSelectOptions);
- */
     class CustomSelect {
         constructor(selectDom) {
-            this.doms = {
-                // customSelect: select.querySelector(select),
-                selectElements: document.querySelectorAll(selectDom),
-                select: document.createElement('div'),
-                span: document.createElement('span'),
-                ul: document.createElement('ul'),
-                // customSelectOptions: document.querySelector('.custom-select-options'),
-            };
-            this.index = 0;
+            this.selectDoms = document.querySelectorAll(selectDom);
+            const selectElements = Array.from(this.selectDoms);
 
-            const selectElements = Array.from(this.doms.selectElements);
-            console.log(selectElements);
-            selectElements.forEach((selectElement, index) => {
+            selectElements.forEach((item) => {
+                const selectElement = item.querySelector('select');
                 console.log(selectElement);
                 this.createSelect(selectElement);
-                this.changeOption();
+                this.changeOption(selectElement);
             });
         }
 
         createSelect(selectElement) {
-            let { select, span, ul } = this.doms;
-            select = document.createElement('div');
+            const select = document.createElement('div');
             select.classList.add('create-select');
 
-            span = document.createElement('span');
+            const span = document.createElement('span');
             span.classList.add('current-option');
             span.textContent = selectElement.options[selectElement.selectedIndex].textContent;
 
             select.appendChild(span);
 
             const fragment = new DocumentFragment();
-            ul = document.createElement('ul');
+            const ul = document.createElement('ul');
             ul.classList.add('create-options');
 
             for (const option of selectElement.options) {
                 const li = document.createElement('li');
                 li.textContent = option.textContent;
                 li.dataset.value = option.value;
-                li.addEventListener('click', function (event) {
+                li.addEventListener('click', (event) => {
                     event.stopPropagation();
-                    this.chooseOption(event, selectElement);
+                    this.chooseOption(event, selectElement, span, ul);
                 });
                 fragment.appendChild(li);
             }
+
             ul.appendChild(fragment);
             select.appendChild(ul);
-            console.log(selectElement.parentNode);
+
             selectElement.parentNode.appendChild(select);
         }
 
-        chooseOption(event, selectElement) {
-            const { span, ul } = this.doms;
+        chooseOption(event, selectElement, span, ul) {
             const selectedValue = event.target.dataset.value;
             span.textContent = event.target.textContent;
             selectElement.value = selectedValue;
-            ul.style.display = 'none';
+            span.classList.remove('show');
+            ul.classList.remove('show');
         }
 
-        changeOption() {
-            const { select, ul } = this.doms;
-            select.addEventListener('click', function (event) {
+        changeOption(selectElement) {
+            const select = selectElement.nextElementSibling;
+            const span = select.querySelector('span');
+            const ul = select.querySelector('.create-options');
+            select.addEventListener('click', (event) => {
                 event.stopPropagation();
-                ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
+
+                const selectElements = Array.from(this.selectDoms);
+                selectElements.forEach((item) => {
+                    const selectElem = item.querySelector('select');
+                    const select = selectElem.nextElementSibling;
+                    const span = select.querySelector('span');
+                    const options = select.querySelector('.create-options');
+                    span.classList.remove('show');
+                    options.classList.remove('show');
+                });
+
+                if (ul.classList.contains('show')) {
+                    ul.classList.remove('show');
+                    span.classList.remove('show');
+                } else {
+                    ul.classList.add('show');
+                    span.classList.add('show');
+                }
             });
-            document.addEventListener('click', function (event) {
-                event.stopPropagation();
-                ul.style.display = 'none';
+            document.addEventListener('click', () => {
+                ul.classList.remove('show');
+                span.classList.remove('show');
             });
         }
     }

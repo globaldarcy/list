@@ -6,7 +6,7 @@ import Layout from '../layouts/Layout.astro';
     <main>
         <div class="container">
             <div class="custom-select">
-                <select>
+                <select id="sel1">
                     <option value="option1">Option 1</option>
                     <option value="option2">Option 2</option>
                     <option value="option3">Option 3</option>
@@ -15,7 +15,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
         <div class="container">
             <div class="custom-select">
-                <select>
+                <select id="sel2">
                     <option value="option1">Option 1</option>
                     <option value="option2">Option 2</option>
                     <option value="option3">Option 3</option>
@@ -58,26 +58,25 @@ import Layout from '../layouts/Layout.astro';
         margin: 50px auto;
         width: 800px;
     }
-    /* 隐藏原生的 select 元素 */
     .custom-select {
-        appearance: none;
-        background-color: transparent;
-        border: none;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        font-family: inherit;
-        font-size: inherit;
-        cursor: inherit;
-        line-height: inherit;
+        margin: 10px;
+        position: relative;
+    }
+    /* 隐藏原生的 select 元素 */
+    select {
+        z-index: -1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
     }
 
     /* 自定义的 select 样式 */
     .create-select {
         position: relative;
-        display: inline-block;
-        background-color: #f2f2f2;
-        border: 1px solid #2c5aa0;
         cursor: pointer;
     }
 
@@ -85,6 +84,8 @@ import Layout from '../layouts/Layout.astro';
         position: relative;
         display: block;
         padding: 10px 30px 10px 10px;
+        background-color: #f2f2f2;
+        border: 1px solid #2c5aa0;
         color: #2c5aa0;
         overflow: hidden;
         white-space: nowrap;
@@ -143,14 +144,17 @@ import Layout from '../layouts/Layout.astro';
 <script is:inline>
     class CustomSelect {
         constructor(selectDom) {
+            this.event = new Event('change', {
+                bubbles: true,
+                cancelable: true,
+            });
             this.selectDoms = document.querySelectorAll(selectDom);
             const selectElements = Array.from(this.selectDoms);
 
-            selectElements.forEach((item) => {
+            selectElements.forEach((item, index) => {
                 const selectElement = item.querySelector('select');
-                console.log(selectElement);
                 this.createSelect(selectElement);
-                this.changeOption(selectElement);
+                this.changeOption(selectElement, index);
             });
         }
 
@@ -185,15 +189,16 @@ import Layout from '../layouts/Layout.astro';
             selectElement.parentNode.appendChild(select);
         }
 
-        chooseOption(event, selectElement, span, ul) {
-            const selectedValue = event.target.dataset.value;
-            span.textContent = event.target.textContent;
+        chooseOption(e, selectElement, span, ul) {
+            const selectedValue = e.target.dataset.value;
+            span.textContent = e.target.textContent;
             selectElement.value = selectedValue;
+            selectElement.dispatchEvent(this.event);
             span.classList.remove('show');
             ul.classList.remove('show');
         }
 
-        changeOption(selectElement) {
+        changeOption(selectElement, index) {
             const select = selectElement.nextElementSibling;
             const span = select.querySelector('span');
             const ul = select.querySelector('.create-options');
@@ -201,7 +206,10 @@ import Layout from '../layouts/Layout.astro';
                 event.stopPropagation();
 
                 const selectElements = Array.from(this.selectDoms);
-                selectElements.forEach((item) => {
+                selectElements.forEach((item, i) => {
+                    if (i === index) {
+                        return false;
+                    }
                     const selectElem = item.querySelector('select');
                     const select = selectElem.nextElementSibling;
                     const span = select.querySelector('span');
@@ -226,4 +234,12 @@ import Layout from '../layouts/Layout.astro';
     }
 
     var sel = new CustomSelect('.custom-select');
+    document.getElementById('sel1').addEventListener('change', function () {
+        var selectedCar = document.getElementById('sel1').value;
+        console.log('id1: ',selectedCar);
+    });
+    document.getElementById('sel2').addEventListener('change', function () {
+        var selectedCar = document.getElementById('sel1').value;
+        console.log('id2: ',selectedCar);
+    });
 </script>

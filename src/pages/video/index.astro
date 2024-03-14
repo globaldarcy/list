@@ -1,0 +1,41 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Video">
+    <main>
+        <div id="container"></div>
+    </main>
+</Layout>
+
+<style is:global>
+    #container {
+        margin: 0 auto;
+        max-width: 922px;
+        padding: 80px 0 150px;
+    }
+    .grid {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 9px;
+        justify-content: space-between;
+    }
+
+    .grid-item {
+        width: 49%;
+        overflow: hidden;
+    }
+
+    .grid-item video {
+        width: 100%;
+        display: block;
+        background-color: #f5f8fa;
+    }
+</style>
+
+<script type="module">
+    fetch('http://localhost:4321/api/getImages')
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+</script>

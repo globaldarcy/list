@@ -14,7 +14,7 @@ import Layout from "../layouts/Layout.astro";
                 <h1>THE LANGHAM HOTELS & RESORTS</h1>
                 <p>The Brilliant by Langham loyalty programme gives you more for less. Boost your benefits by rising up through membership tiers, turning travel into treasured memories.</p>
             </summary>
-            <button id="btn">暂停</button>
+            <button id="btn">pause</button>
         </section>
     </main>
 </Layout>
@@ -73,10 +73,10 @@ import Layout from "../layouts/Layout.astro";
     function togglePlayPause() {
         if (video.paused) {
             video.play();
-            this.innerText = "暂停";
+            this.innerText = "pause";
         } else {
             video.pause();
-            this.innerText = "播放";
+            this.innerText = "play";
         }
     }
 </script>

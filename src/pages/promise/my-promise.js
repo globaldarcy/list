@@ -80,15 +80,15 @@ const pro = new MyPromise((resolve, reject) => {
 console.log(pro);
 
 
-$('.btn-ga').on('click', function () {
-    var $name = $(this).data('btn-name');
-    var $pageName = $(this).data('page-name');
-    var $bannerName = $(this).data('banner-name');
-    dataLayer.push({
-        'event': 'productBannerBtnClicks', // 事件名称
-        'buttonName': $name,
-        'pageName': $pageName,
-        'bannerName': $bannerName,
-        'bannerPosition': 'mid'
-    });
-});
+// $('.btn-ga').on('click', function () {
+//     var $name = $(this).data('btn-name');
+//     var $pageName = $(this).data('page-name');
+//     var $bannerName = $(this).data('banner-name');
+//     dataLayer.push({
+//         'event': 'productBannerBtnClicks', // 事件名称
+//         'buttonName': $name,
+//         'pageName': $pageName,
+//         'bannerName': $bannerName,
+//         'bannerPosition': 'mid'
+//     });
+// });

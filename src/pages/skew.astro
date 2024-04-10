@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title='V2 Photo Justified Layout'>
+    <main>
+        <div class='container'>
+            <div class='grid-item'>
+                <img src='/public/img/photos/1.jpg' />
+            </div>
+            <div class='grid-item'>
+                <img src='/public/img/photos/1.jpg' />
+            </div>
+            <div class='grid-item'>
+                <img src='/public/img/photos/1.jpg' />
+            </div>
+            <div class='grid-item'>
+                <img src='/public/img/photos/1.jpg' />
+            </div>
+            <div class='grid-item'>
+                <img src='/public/img/photos/1.jpg' />
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style is:global>
+    .container {
+        width: auto;
+        margin: 0 -20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .grid-item {
+        position: relative;
+        width: 20%;
+        overflow: hidden;
+        position: relative;
+        transform: skewX(-15deg);
+    }
+
+    .grid-item img {
+        max-width: 100%;
+        transform: skewX(15deg) scale(1.2);
+    }
+    .grid-item:hover::before {
+        z-index: 3;
+        position: absolute;
+        content: '';
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+<script type='module'></script>

@@ -4,26 +4,152 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="Video Demo">
     <main>
-        <section id="container">
+        <section class="container">
             <div class="media">
-                <video id="myVideo" autoplay loop muted playsinline="true" webkit-playsinline="true" x-webkit-airplay="true" x5-video-player-type="h5" x5-video-player-fullscreen="true" class="load-video" poster="../media/flower.jpg">
+                <video autoplay loop muted playsinline="true" webkit-playsinline="true" x-webkit-airplay="true" x5-video-player-type="h5" x5-video-player-fullscreen="true" class="load-video" poster="../media/flower.jpg">
                     <source src="../media/flower.webm" type="video/webm" />
                     <source src="../media/video.mp4" type="video/mp4" />
+                    <track class="video-track" kind="subtitles" srclang="en" src="/media/flower.vtt" />
                 </video>
             </div>
-            <summary>
-                <h1>THE LANGHAM HOTELS & RESORTS</h1>
-                <p>The Brilliant by Langham loyalty programme gives you more for less. Boost your benefits by rising up through membership tiers, turning travel into treasured memories.</p>
-            </summary>
-            <a href="javascript:void(0)'" id="btn">
-                <span class="pause-button"></span>
-                <span class="play-button" style="display: none;"></span>
-            </a>
+            <div class="content">
+                <div class="summary summary-center text-center">
+                    <h1>THE LANGHAM HOTELS & RESORTS</h1>
+                    <p>The Brilliant by Langham loyalty programme gives you more for less. Boost your benefits by rising up through membership tiers, turning travel into treasured memories.</p>
+                    <div class="text-center">
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                    </div>
+                </div>
+                <div class="video-btn-group">
+                    <a href="javascript:void(0);" class="video-cc">CC(On)</a>
+                    <a href="javascript:void(0);" class="video-btn">
+                        <span class="pause-button"></span>
+                        <span class="play-button" style="display: none;"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="container">
+            <div class="media">
+                <video autoplay loop muted playsinline="true" webkit-playsinline="true" x-webkit-airplay="true" x5-video-player-type="h5" x5-video-player-fullscreen="true" class="load-video" poster="../media/flower.jpg">
+                    <source src="../media/video.mp4" type="video/mp4" />
+                    <source src="../media/flower.webm" type="video/webm" />
+                    <track class="video-track" kind="subtitles" srclang="en" src="/media/flower.vtt" />
+                </video>
+            </div>
+            <div class="content">
+                <div class="summary summary-left">
+                    <h1>THE LANGHAM HOTELS & RESORTS</h1>
+                    <p>The Brilliant by Langham loyalty programme gives you more for less. Boost your benefits by rising up through membership tiers, turning travel into treasured memories.</p>
+                    <div class="text-left">
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                    </div>
+                </div>
+                <div class="video-btn-group">
+                    <a href="javascript:void(0);" class="video-cc">CC(On)</a>
+                    <a href="javascript:void(0);" class="video-btn">
+                        <span class="pause-button"></span>
+                        <span class="play-button" style="display: none;"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="container">
+            <div class="media">
+                <video autoplay loop muted playsinline="true" webkit-playsinline="true" x-webkit-airplay="true" x5-video-player-type="h5" x5-video-player-fullscreen="true" class="load-video" poster="../media/flower.jpg">
+                    <source src="../media/flower.webm" type="video/webm" />
+                    <source src="../media/video.mp4" type="video/mp4" />
+                    <track class="video-track" kind="subtitles" srclang="en" src="/media/flower.vtt" />
+                </video>
+            </div>
+            <div class="content">
+                <div class="summary summary-right text-right">
+                    <h1>THE LANGHAM HOTELS & RESORTS</h1>
+                    <p>The Brilliant by Langham loyalty programme gives you more for less. Boost your benefits by rising up through membership tiers, turning travel into treasured memories.</p>
+                    <div class="text-right">
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                    </div>
+                </div>
+                <div class="video-btn-group">
+                    <a href="javascript:void(0);" class="video-cc">CC(On)</a>
+                    <a href="javascript:void(0);" class="video-btn">
+                        <span class="pause-button"></span>
+                        <span class="play-button" style="display: none;"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="container">
+            <div class="media">
+                <video autoplay loop muted playsinline="true" webkit-playsinline="true" x-webkit-airplay="true" x5-video-player-type="h5" x5-video-player-fullscreen="true" class="load-video" poster="../media/flower.jpg">
+                    <source src="../media/video.mp4" type="video/mp4" />
+                    <source src="../media/flower.webm" type="video/webm" />
+                    <track class="video-track" kind="subtitles" srclang="en" src="/media/flower.vtt" />
+                </video>
+            </div>
+            <div class="content">
+                <div class="summary summary-left summary-btm">
+                    <h1>THE LANGHAM HOTELS & RESORTS</h1>
+                    <p>The Brilliant by Langham loyalty programme gives you more for less. Boost your benefits by rising up through membership tiers, turning travel into treasured memories.</p>
+                    <div class="text-left">
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                    </div>
+                </div>
+                <div class="video-btn-group">
+                    <a href="javascript:void(0);" class="video-cc">CC(On)</a>
+                    <a href="javascript:void(0);" class="video-btn">
+                        <span class="pause-button"></span>
+                        <span class="play-button" style="display: none;"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="container">
+            <div class="media">
+                <video autoplay loop muted playsinline="true" webkit-playsinline="true" x-webkit-airplay="true" x5-video-player-type="h5" x5-video-player-fullscreen="true" class="load-video" poster="../media/flower.jpg">
+                    <source src="../media/flower.webm" type="video/webm" />
+                    <source src="../media/video.mp4" type="video/mp4" />
+                    <track class="video-track" kind="subtitles" srclang="en" src="/media/flower.vtt" />
+                </video>
+            </div>
+            <div class="content">
+                <div class="summary summary-right summary-btm text-right">
+                    <h1>THE LANGHAM HOTELS & RESORTS</h1>
+                    <p>The Brilliant by Langham loyalty programme gives you more for less. Boost your benefits by rising up through membership tiers, turning travel into treasured memories.</p>
+                    <div class="text-right">
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                        <a href="javascript:void(0);" class="link-primary">More</a>
+                    </div>
+                </div>
+                <div class="video-btn-group">
+                    <a href="javascript:void(0);" class="video-cc">CC(On)</a>
+                    <a href="javascript:void(0);" class="video-btn">
+                        <span class="pause-button"></span>
+                        <span class="play-button" style="display: none;"></span>
+                    </a>
+                </div>
+            </div>
         </section>
     </main>
 </Layout>
 
-<style>
+<style lang="scss">
+    @function vw($px) {
+        @return calc($px/1920) * 100vw;
+    }
+
+    @function vwm($px) {
+        @return calc($px/750) * 100vw;
+    }
+    @mixin mob {
+        @media screen and (max-width: 779px), screen and (max-aspect-ratio: 1/1) and (max-width: 1200px) {
+            @content;
+        }
+    }
     @font-face {
         font-family: "Baskerville";
         src:
@@ -49,10 +175,18 @@ import Layout from "../layouts/Layout.astro";
         padding: 0;
         box-sizing: border-box;
     }
-    #container {
+    .text-center {
+        text-align: center;
+    }
+    .text-right {
+        text-align: right;
+    }
+    .text-left {
+        text-align: left;
+    }
+    .container {
         position: relative;
-        height: 80%;
-        max-height: 800px;
+        height: 44vw;
         overflow: hidden;
         font-weight: 400;
         margin: 0;
@@ -61,54 +195,174 @@ import Layout from "../layouts/Layout.astro";
         font-weight: 400;
         line-height: 1.2;
         letter-spacing: 3px;
+
+        @include mob {
+            height: 90vh;
+        }
     }
-    video {
+    .media {
+        position: relative;
         width: 100%;
-        display: block;
-        object-fit: cover;
+        height: 100%;
+        video {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     }
-    summary {
+
+    .content {
+        z-index: 3;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        max-width: ;
-        padding: 0 15%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
         background-color: rgba(0, 0, 0, 0.5);
-        text-align: center;
     }
-    h1 {
-        max-width: 830px;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        font-size: 40px;
+    .summary {
+        width: vw(800);
+        color: #fff;
+        @include mob {
+            width: vwm(690);
+        }
+        h1 {
+            margin-bottom: vw(24);
+            text-transform: uppercase;
+            font-size: vw(34);
+            letter-spacing: 2px;
+            @include mob {
+                margin-bottom: vwm(20);
+                font-size: vwm(52);
+            }
+        }
+        p {
+            font-size: vw(14);
+            line-height: vw(24);
+            letter-spacing: 1px;
+            text-rendering: optimizeLegibility;
+            font-family: FuturaStd-Book;
+            @include mob {
+                font-size: vwm(24);
+                line-height: vwm(48);
+            }
+        }
+        .link-primary {
+            margin-top: vw(30);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+            min-width: 220px;
+            max-width: 500px;
+            padding: 0 20px;
+            color: #fff;
+            border: solid 1px #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1.85;
+            letter-spacing: 2px;
+            @include mob {
+                margin-top: vwm(40);
+                max-width: vwm(600);
+                min-width: vwm(424);
+            }
+            &:hover {
+                border-width: 2px;
+            }
+            & + .link-primary {
+                margin-left: vw(30);
+                @include mob {
+                    margin-left: 0;
+                }
+            }
+        }
+        &.summary-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            @include mob {
+                top: 40%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+        &.summary-left {
+            position: absolute;
+            top: 50%;
+            left: vw(220);
+            transform: translateY(-50%);
+            @include mob {
+                top: 40%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+        &.summary-right {
+            position: absolute;
+            top: 50%;
+            right: vw(220);
+            transform: translateY(-50%);
+            @include mob {
+                top: 40%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+        &.summary-btm {
+            position: absolute;
+            top: auto;
+            bottom: vw(100);
+            transform: none;
+            @include mob {
+                bottom: vwm(150);
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
     }
-    p {
-        max-width: 800px;
-        font-size: 14px;
-        line-height: 24px;
-        letter-spacing: 1px;
-        text-rendering: optimizeLegibility;
-        font-family: FuturaStd-Book;
-    }
-    a {
-        overflow: hidden;
-        display: block;
+    .video-btn-group {
         z-index: 3;
         position: absolute;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 40px;
+        bottom: vw(30);
+        right: vw(100);
+        display: flex;
+        @include mob {
+            bottom: vwm(30);
+            right: vwm(30);
+        }
+    }
+    .video-cc,
+    .video-btn {
+        overflow: hidden;
+        display: inline-flex;
+        min-width: 40px;
         height: 40px;
         background-color: rgba(0, 0, 0, 0.5);
         font-family: FuturaStd-Book;
+
+        & + a {
+            margin-left: vw(15);
+            @include mob {
+                margin-left: vwm(30);
+            }
+        }
+    }
+    .video-cc {
+        padding: 0 vw(10);
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        text-decoration: none;
+        font-size: vw(14);
+        line-height: 1;
+        @include mob {
+            padding: 0 vwm(20);
+            font-size: vwm(28);
+        }
     }
     .play-button {
         display: flex;
@@ -123,7 +377,7 @@ import Layout from "../layouts/Layout.astro";
         display: inline-block;
         border-style: solid;
         border-width: 7px 0 7px 12px;
-        border-color: transparent transparent transparent #ECEDEF;
+        border-color: transparent transparent transparent #ecedef;
     }
     .pause-button {
         display: flex;
@@ -138,7 +392,7 @@ import Layout from "../layouts/Layout.astro";
     .pause-button::after {
         content: "";
         position: absolute;
-        background-color: #ECEDEF;
+        background-color: #ecedef;
     }
 
     .pause-button::before {
@@ -155,20 +409,39 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script is:inline>
-    var video = document.getElementById("myVideo");
-    var btn = document.getElementById("btn");
+    const videos = document.querySelectorAll(".load-video");
+    const btns = document.querySelectorAll(".video-btn");
+    const ccBtns = document.querySelectorAll(".video-cc");
+    btns.forEach((item, index) => {
+        const video = videos[index];
+        item.addEventListener("click", function () {
+            const that = this;
+            togglePlayPause(video, that);
+        });
+    });
+    ccBtns.forEach((item, index) => {
+        const video = videos[index];
+        const track = video.textTracks[0];
+        item.addEventListener("click", function () {
+            if (track.mode === "showing") {
+                track.mode = "hidden";
+                item.textContent = "CC(On)";
+            } else {
+                track.mode = "showing";
+                item.textContent = "CC(Off)";
+            }
+        });
+    });
 
-    btn.addEventListener("click", togglePlayPause);
-
-    function togglePlayPause() {
+    function togglePlayPause(video, that) {
         if (video.paused) {
             video.play();
-            this.querySelector(".pause-button").style.display = "flex";
-            this.querySelector(".play-button").style.display = "none";
+            that.querySelector(".pause-button").style.display = "flex";
+            that.querySelector(".play-button").style.display = "none";
         } else {
             video.pause();
-            this.querySelector(".pause-button").style.display = "none";
-            this.querySelector(".play-button").style.display = "flex";
+            that.querySelector(".pause-button").style.display = "none";
+            that.querySelector(".play-button").style.display = "flex";
         }
     }
 </script>

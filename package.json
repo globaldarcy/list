@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "astro": "^4.5.1",
-    "justified-layout": "^4.1.0"
+    "justified-layout": "^4.1.0",
+    "sass": "^1.72.0"
   },
   "volta": {
     "node": "20.12.1"

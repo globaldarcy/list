@@ -5,14 +5,18 @@ export default defineConfig({
     server: {
         cors: true,
         host: true,
-        proxy: {
-            '/api': {
-                target: 'https://api.apiopen.top/',
-                changeOrigin: true,
-                configure: (proxy, options) => {
-                    console.log(proxy, options);
-                }
-            }
-        }
-    }
+        open: "/",
+        // proxy: {
+        //     '/api': {
+        //         target: 'https://api.apiopen.top/',
+        //         changeOrigin: true,
+        //         configure: (proxy, options) => {
+        //             console.log(proxy, options);
+        //         }
+        //     }
+        // }
+    },
+    devToolbar: {
+        enabled: false,
+    },
 });

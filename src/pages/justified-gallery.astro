@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/jgLayout.astro';
+import Layout from "../layouts/jgLayout.astro";
 ---
 
 <Layout title="V4 Photo Justified Layout">
@@ -109,14 +109,13 @@ import Layout from '../layouts/jgLayout.astro';
 <script is:inline src="../js/jquery.justifiedGallery.min.js"></script>
 <script is:inline>
     // $('.grid').justifiedGallery();
-    $('.grid')
+    $(".grid")
         .justifiedGallery({
             rowHeight: 200,
-            maxRowHeight: 190,
             border: 0,
             margins: 9,
         })
-        .on('jg.complete', function () {
+        .on("jg.complete", function () {
             console.log(1);
         });
 </script>

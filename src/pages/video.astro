@@ -12,6 +12,9 @@ import Layout from "../layouts/Layout.astro";
                     <track class="video-track" kind="subtitles" srclang="en" src="../media/flower.vtt" />
                 </video>
             </div>
+            <div class="track-container">
+                <p class="text-track hide"></p>
+            </div>
             <div class="content">
                 <div class="summary summary-center text-center">
                     <h1>THE LANGHAM HOTELS & RESORTS</h1>
@@ -38,6 +41,9 @@ import Layout from "../layouts/Layout.astro";
                     <source src="../media/flower.webm" type="video/webm" />
                     <track class="video-track" kind="subtitles" srclang="en" src="../media/flower.vtt" />
                 </video>
+            </div>
+            <div class="track-container">
+                <p class="text-track hide"></p>
             </div>
             <div class="content">
                 <div class="summary summary-left">
@@ -66,6 +72,9 @@ import Layout from "../layouts/Layout.astro";
                     <track class="video-track" kind="subtitles" srclang="en" src="../media/flower.vtt" />
                 </video>
             </div>
+            <div class="track-container">
+                <p class="text-track hide"></p>
+            </div>
             <div class="content">
                 <div class="summary summary-right text-right">
                     <h1>THE LANGHAM HOTELS & RESORTS</h1>
@@ -93,6 +102,9 @@ import Layout from "../layouts/Layout.astro";
                     <track class="video-track" kind="subtitles" srclang="en" src="../media/flower.vtt" />
                 </video>
             </div>
+            <div class="track-container">
+                <p class="text-track hide"></p>
+            </div>
             <div class="content">
                 <div class="summary summary-left summary-btm">
                     <h1>THE LANGHAM HOTELS & RESORTS</h1>
@@ -119,6 +131,9 @@ import Layout from "../layouts/Layout.astro";
                     <source src="../media/video.mp4" type="video/mp4" />
                     <track class="video-track" kind="subtitles" srclang="en" src="../media/flower.vtt" />
                 </video>
+            </div>
+            <div class="track-container">
+                <p class="text-track hide"></p>
             </div>
             <div class="content">
                 <div class="summary summary-right summary-btm text-right">
@@ -214,6 +229,31 @@ import Layout from "../layouts/Layout.astro";
             width: 100%;
             height: 100%;
             object-fit: cover;
+            &::cue {
+                opacity: 0;
+            }
+        }
+    }
+
+    .track-container {
+        z-index: 5;
+        position: absolute;
+        top: 75%;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        .text-track {
+            max-width: 80%;
+            padding: 0.1em 0.5em;
+            font-family: Arial, sans-serif;
+            color: white;
+            font-size: 1.6em;
+            background-color: black;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            &.hide {
+                display: none;
+            }
         }
     }
 
@@ -421,6 +461,7 @@ import Layout from "../layouts/Layout.astro";
     const btns = document.querySelectorAll(".video-btn");
     const ccBtns = document.querySelectorAll(".video-cc");
     const muteBtns = document.querySelectorAll(".video-volume");
+    const textTrack = document.querySelectorAll(".text-track");
     btns.forEach((item, index) => {
         const video = videos[index];
         item.addEventListener("click", function () {
@@ -431,10 +472,20 @@ import Layout from "../layouts/Layout.astro";
     ccBtns.forEach((item, index) => {
         const video = videos[index];
         const track = video.textTracks[0];
+        track.addEventListener("cuechange", (event) => {
+            if (track.mode === "showing") {
+                let cues = event.target.activeCues[0];
+                if (cues !== undefined) {
+                    textTrack[index].classList.remove("hide");
+                    textTrack[index].innerHTML = cues.text;
+                }
+            }
+        });
         item.addEventListener("click", function () {
             if (track.mode === "showing") {
                 track.mode = "hidden";
                 item.classList.add("on");
+                textTrack[index].classList.add("hide");
             } else {
                 track.mode = "showing";
                 item.classList.remove("on");

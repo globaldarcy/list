@@ -5,27 +5,31 @@
     align-items: $align;
     @content;
 }
-// $breakpoints: (
-//     "phone": screen and (max-width: 779px), screen and (max-aspect-ratio: 1/1) and (max-width: 1200px),
-//     "tablet": (min-width: 640px) and (max-width: 1200px) and (max-aspect-ratio: 1/1),
-//     "desktop": 1024px
-// );
 
-// @mixin responsiveTo($breakname) {
-//     $bp: map-get($breakpoints, $breakname);
-//     @if type-of($value: $bp) == "list" {
-//         @media screen and (min-width: nth($bp, 1)) and (max-width: nth($bp, 2)) {
-//             @content;
-//         }
-//     } @else {
-//         @media screen and $bp {
-//             @content;
-//         }
-//     }
-// }
+$breakpoints: (
+    "phone": '(max-width: 779px), (max-aspect-ratio: 1/1) and (max-width: 1200px)',
+    "tablet": '(min-width: 640px) and (max-width: 1200px) and (max-aspect-ratio: 1/1)',
+    "desktop": '(min-width: 1024px)'
+);
 
-// .foo {
-//     @include responsiveTo("tablet") {
-//         color: red;
-//     }
-// }
+@mixin responsiveTo($breakname) {
+    $bp: map-get($breakpoints, $breakname);
+    @media screen and #{$bp} {
+        @content;
+    }
+}
+
+.foo {
+    @include responsiveTo("phone") {
+        background: red !important;
+    }
+}
+
+
+@function vw($px) {
+    @return calc($px/1920) * 100vw;
+}
+
+@function vwm($px) {
+    @return calc($px/750) * 100vw;
+}

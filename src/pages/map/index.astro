@@ -1,0 +1,70 @@
+---
+import Layout from "../../layouts/mapLayout.astro";
+---
+
+<Layout title="Map">
+    <main>
+        <div class="map"></div>
+        <div id="googleMap" class="map"></div>
+        <div class="map"></div>
+    </main>
+</Layout>
+
+<script is:inline>
+    // https://developers.google.cn/maps/documentation/javascript/advanced-markers/html-markers?hl=zh-cn#maps_advanced_markers_html-html
+    var myCenter = new google.maps.LatLng(51.508742, -0.12085);
+
+    function initialize() {
+        var mapProp = {
+            center: myCenter,
+            zoom: 5,
+            // mapTypeId: google.maps.MapTypeId.ROADMAP,
+        };
+
+        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        const beachFlagImg = document.createElement("img");
+
+        beachFlagImg.src = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+
+        var marker = new google.maps.Marker({
+            position: { lat: 51.508742, lng: -0.12085 },
+            map: map,
+            type: "building",
+            title: "Marker 1",
+            content: beachFlagImg,
+            // animation: google.maps.Animation.BOUNCE,
+        });
+        var marker3 = new google.maps.Marker({
+            position: { lat: 48.508742, lng: -0.12085 },
+            map: map,
+            title: "Marker 1",
+            icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+            // animation: google.maps.Animation.BOUNCE,
+        });
+        var marker1 = new google.maps.Marker({
+            position: { lat: -34.397, lng: 100.644 },
+            map: map,
+            // animation: google.maps.Animation.BOUNCE,
+            title: "Marker 1",
+        });
+
+        var marker2 = new google.maps.Marker({
+            position: { lat: -33.867, lng: 151.206 },
+            map: map,
+            animation: google.maps.Animation.BOUNCE,
+            title: "Marker 2",
+        });
+
+        // marker.setMap(map);
+    }
+
+    google.maps.event.addDomListener(window, "load", initialize);
+</script>
+
+<style is:inline lang="scss">
+    .map {
+        margin: 0 auto;
+        width: 80vw;
+        height: 100vh;
+    }
+</style>

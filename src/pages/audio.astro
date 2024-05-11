@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Audio Demo">
+    <main>
+        <section class="v-container">
+            <!-- 在页面中调用 ResponsiveVoice.speak() 方法 -->
+            <button id="play">Speak</button>
+        </section>
+    </main>
+</Layout>
+
+<style lang="scss"></style>
+
+<!-- 引入 ResponsiveVoice.js 库 -->
+<script is:inline src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<script is:inline>
+    document.addEventListener("click", function () {
+        responsiveVoice.speak("你可以根据需要调整 text、lang、volume、rate 和 pitch 等参数，以实现不同的语音效果。这种方式适用于基本的文本到语音转换，如果需要更复杂或自定义的语音合成功能，可能需要结合其他的语音合成服务或库来实现。", "Chinese Female");
+    });
+    // 检查浏览器是否支持 SpeechSynthesis API
+    // if ("speechSynthesis" in window) {
+    //     const synthesis = window.speechSynthesis;
+
+    //     // 创建 SpeechSynthesisUtterance 对象
+    //     const message = new SpeechSynthesisUtterance();
+    //     // message.text = "Hello, world!";
+    //     message.text = "你可以根据需要调整 text、lang、volume、rate 和 pitch 等参数，以实现不同的语音效果。这种方式适用于基本的文本到语音转换，如果需要更复杂或自定义的语音合成功能，可能需要结合其他的语音合成服务或库来实现。";
+
+    //     // 设置语音参数
+    //     message.lang = "zh-CN"; // 设置语言为英语（美国）
+    //     message.volume = 1; // 设置音量
+    //     message.rate = 1; // 设置语速
+    //     message.pitch = 1; // 设置音调
+
+    //     // 播放语音
+    //     synthesis.speak(message);
+    // } else {
+    //     console.log("Speech synthesis not supported.");
+    // }
+</script>

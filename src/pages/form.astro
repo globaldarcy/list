@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Form">
@@ -37,7 +37,7 @@ import Layout from '../layouts/Layout.astro';
                     <option value="option3">Option 3</option>
                 </select>
             </div>
-            <div class="custom-select">
+            <div class="custom-select disabled">
                 <select>
                     <option value="option1">Option 1</option>
                     <option value="option2">Option 2</option>
@@ -45,106 +45,207 @@ import Layout from '../layouts/Layout.astro';
                 </select>
             </div>
         </div>
+        <div class="container">
+            <label class="label" for="radio1">
+                <input class="custom-radio" type="radio" id="radio1" name="radio" /> First element
+            </label>
+            <label class="label" for="radio2">
+                <input class="custom-radio" type="radio" id="radio2" name="radio" /> Second element
+            </label>
+            <label class="label" for="radio3">
+                <input class="custom-radio" type="radio" id="radio3" name="radio2" disabled /> Three element
+            </label>
+            <label class="label" for="radio4">
+                <input class="custom-radio" type="radio" id="radio4" name="radio2" disabled checked /> Four element
+            </label>
+        </div>
+        <div class="container">
+            <label class="label" for="checkbox1">
+                <input class="custom-checkbox" type="checkbox" id="checkbox1" name="checkbox" checked /> First element
+            </label>
+            <label class="label" for="checkbox2">
+                <input class="custom-checkbox" type="checkbox" id="checkbox2" name="checkbox" /> Second element
+            </label>
+            <label class="label" for="checkbox3">
+                <input class="custom-checkbox" type="checkbox" id="checkbox3" name="checkbox2" disabled /> Three element
+            </label>
+            <label class="label" for="checkbox4">
+                <input class="custom-checkbox" type="checkbox" id="checkbox4" name="checkbox2" disabled checked /> Four element
+            </label>
+        </div>
     </main>
 </Layout>
 
-<style is:global>
+<style is:global lang="scss">
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
     .container {
-        margin: 50px auto;
+        margin: 100px auto;
+        padding: 0 20px;
         width: 800px;
     }
+
+    .label {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    // 自定义的 radio 样式
+    .custom-radio[type="radio"] {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        appearance: none;
+        --radio-color: #004ecb;
+        &:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            border: 2px solid var(--radio-color, #333);
+            border-radius: 50%;
+        }
+
+        &:checked:after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: var(--radio-color, #333);
+            border-radius: 50%;
+            transform: scale(0.6);
+        }
+        &:disabled {
+            opacity: 0.6;
+        }
+    }
+
+    // 自定义的 checkbox 样式
+    .custom-checkbox[type="checkbox"] {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        appearance: none;
+        --checkbox-color: #363636;
+        &:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            border: 2px solid var(--checkbox-color, #333);
+        }
+
+        &:checked:after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--checkbox-color, #333) url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI4IiB2aWV3Qm94PSIwIDAgOCA4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KPHBhdGggZD0iTTEgNS41TDMuMjUgN0w3IDEiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4NCjwvc3ZnPg0K) no-repeat center / 60% 60%;
+        }
+        &:disabled {
+            opacity: 0.6;
+        }
+    }
+
     .custom-select {
-        margin: 10px;
+        margin: 50px 0;
         position: relative;
     }
-    /* 隐藏原生的 select 元素 */
-    select {
-        z-index: -1;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 1px;
-        height: 1px;
-        opacity: 0;
-        pointer-events: none;
-    }
 
-    /* 自定义的 select 样式 */
-    .create-select {
-        position: relative;
-        cursor: pointer;
-    }
+    .custom-select {
+        --text-color: #3c80ee;
+        --border-color: #004ecb;
+        --bg-color: #f2f2f2;
+        --text-option-color: #ee3cc1;
+        --bg-option-color: #f2f2f2;
+        --bg-hover-color: #e6e6e6;
+        /* 隐藏原生的 select 元素 */
+        select {
+            z-index: -1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        /* 自定义的 select 样式 */
+        .create-select {
+            position: relative;
+            cursor: pointer;
+            span {
+                position: relative;
+                display: block;
+                padding: 10px 30px 10px 10px;
+                background-color: var(--bg-color, #fff);
+                border: 1px solid var(--border-color, #333);
+                color: var(--text-color, #333);
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                &::after {
+                    pointer-events: none;
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    right: 10px;
+                    transform: translateY(-50%);
+                    width: 0;
+                    height: 0;
+                    border-left: 5px solid transparent;
+                    border-right: 5px solid transparent;
+                    border-top: 5px solid var(--border-color, #333);
+                }
+                &.show::after {
+                    transform: translateY(-50%) rotate(180deg);
+                }
+            }
 
-    .create-select span {
-        position: relative;
-        display: block;
-        padding: 10px 30px 10px 10px;
-        background-color: #f2f2f2;
-        border: 1px solid #2c5aa0;
-        color: #2c5aa0;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
+            .create-options {
+                display: none;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                z-index: 1;
+                position: absolute;
+                width: 100%;
+                left: 0;
+                top: calc(100% + 5px);
+                padding: 5px;
+                background-color: var(--bg-option-color, #f2f2f2);
+                border: 1px solid var(--border-color, #333);
+                max-height: 200px;
+                overflow-y: auto;
+                &.show {
+                    display: block;
+                }
 
-    .create-select span::after {
-        pointer-events: none;
-        content: '';
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-top: 5px solid #2c5aa0;
-    }
+                > li {
+                    padding: 0.5em 0;
+                    cursor: pointer;
+                    color: var(--text-option-color, #333);
+                }
 
-    .create-select span.show::after {
-        transform: translateY(-50%) rotate(180deg);
-    }
+                > li:hover {
+                    font-weight: bold;
+                    background-color: var(--bg-hover-color, #e6e6e6);
+                }
+            }
+        }
 
-    .create-options {
-        display: none;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        z-index: 1;
-        position: absolute;
-        width: 100%;
-        left: 0;
-        top: calc(100% + 5px);
-        padding: 5px;
-        background-color: #f2f2f2;
-        border: 1px solid #ccc;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .create-options.show {
-        display: block;
-    }
-
-    .create-options > li {
-        padding: 0.5em 0;
-        cursor: pointer;
-    }
-
-    .create-options > li:hover {
-        background-color: #e6e6e6;
+        &.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
     }
 </style>
 
 <script is:inline>
     class CustomSelect {
         constructor(selectDom) {
-            this.event = new Event('change', {
+            this.event = new Event("change", {
                 bubbles: true,
                 cancelable: true,
             });
@@ -152,31 +253,35 @@ import Layout from '../layouts/Layout.astro';
             const selectElements = Array.from(this.selectDoms);
 
             selectElements.forEach((item, index) => {
-                const selectElement = item.querySelector('select');
+                const selectElement = item.querySelector("select");
+                const isDisabled = item.classList.contains("disabled");
+                if (isDisabled){
+                    selectElement.setAttribute("disabled", "true");
+                }
                 this.createSelect(selectElement);
                 this.changeOption(selectElement, index);
             });
         }
 
         createSelect(selectElement) {
-            const select = document.createElement('div');
-            select.classList.add('create-select');
+            const select = document.createElement("div");
+            select.classList.add("create-select");
 
-            const span = document.createElement('span');
-            span.classList.add('current-option');
+            const span = document.createElement("span");
+            span.classList.add("current-option");
             span.textContent = selectElement.options[selectElement.selectedIndex].textContent;
 
             select.appendChild(span);
 
             const fragment = new DocumentFragment();
-            const ul = document.createElement('ul');
-            ul.classList.add('create-options');
+            const ul = document.createElement("ul");
+            ul.classList.add("create-options");
 
             for (const option of selectElement.options) {
-                const li = document.createElement('li');
+                const li = document.createElement("li");
                 li.textContent = option.textContent;
                 li.dataset.value = option.value;
-                li.addEventListener('click', (event) => {
+                li.addEventListener("click", (event) => {
                     event.stopPropagation();
                     this.chooseOption(event, selectElement, span, ul);
                 });
@@ -194,15 +299,15 @@ import Layout from '../layouts/Layout.astro';
             span.textContent = e.target.textContent;
             selectElement.value = selectedValue;
             selectElement.dispatchEvent(this.event);
-            span.classList.remove('show');
-            ul.classList.remove('show');
+            span.classList.remove("show");
+            ul.classList.remove("show");
         }
 
         changeOption(selectElement, index) {
             const select = selectElement.nextElementSibling;
-            const span = select.querySelector('span');
-            const ul = select.querySelector('.create-options');
-            select.addEventListener('click', (event) => {
+            const span = select.querySelector("span");
+            const ul = select.querySelector(".create-options");
+            select.addEventListener("click", (event) => {
                 event.stopPropagation();
 
                 const selectElements = Array.from(this.selectDoms);
@@ -210,36 +315,36 @@ import Layout from '../layouts/Layout.astro';
                     if (i === index) {
                         return false;
                     }
-                    const selectElem = item.querySelector('select');
+                    const selectElem = item.querySelector("select");
                     const select = selectElem.nextElementSibling;
-                    const span = select.querySelector('span');
-                    const options = select.querySelector('.create-options');
-                    span.classList.remove('show');
-                    options.classList.remove('show');
+                    const span = select.querySelector("span");
+                    const options = select.querySelector(".create-options");
+                    span.classList.remove("show");
+                    options.classList.remove("show");
                 });
 
-                if (ul.classList.contains('show')) {
-                    ul.classList.remove('show');
-                    span.classList.remove('show');
+                if (ul.classList.contains("show")) {
+                    ul.classList.remove("show");
+                    span.classList.remove("show");
                 } else {
-                    ul.classList.add('show');
-                    span.classList.add('show');
+                    ul.classList.add("show");
+                    span.classList.add("show");
                 }
             });
-            document.addEventListener('click', () => {
-                ul.classList.remove('show');
-                span.classList.remove('show');
+            document.addEventListener("click", () => {
+                ul.classList.remove("show");
+                span.classList.remove("show");
             });
         }
     }
 
-    var sel = new CustomSelect('.custom-select');
-    document.getElementById('sel1').addEventListener('change', function () {
-        var selectedCar = document.getElementById('sel1').value;
-        console.log('id1: ',selectedCar);
+    var sel = new CustomSelect(".custom-select");
+    document.getElementById("sel1").addEventListener("change", function () {
+        var selectedCar = document.getElementById("sel1").value;
+        console.log("id1: ", selectedCar);
     });
-    document.getElementById('sel2').addEventListener('change', function () {
-        var selectedCar = document.getElementById('sel1').value;
-        console.log('id2: ',selectedCar);
+    document.getElementById("sel2").addEventListener("change", function () {
+        var selectedCar = document.getElementById("sel1").value;
+        console.log("id2: ", selectedCar);
     });
 </script>

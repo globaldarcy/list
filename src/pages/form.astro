@@ -5,6 +5,18 @@ import Layout from "../layouts/Layout.astro";
 <Layout title="Form">
     <main>
         <div class="container">
+            <div class="custom-upload" data-filename="No file selected">
+                <label class="aiko-form-label" for="upload-file">Select the file</label>
+                <input type="file" name="file" id="upload-file" accept=".zip,.pdf,.jpg,.jpeg,.png" placeholder=" " />
+            </div>
+        </div>
+        <div class="container">
+            <div class="custom-upload" data-filename="No file selected">
+                <label class="aiko-form-label" for="upload-file2">Select the file</label>
+                <input type="file" name="file" id="upload-file2" accept=".zip,.pdf,.jpg,.jpeg,.png" placeholder=" " />
+            </div>
+        </div>
+        <div class="container">
             <div class="custom-select">
                 <select id="sel1">
                     <option value="option1">Option 1</option>
@@ -92,6 +104,36 @@ import Layout from "../layouts/Layout.astro";
         display: inline-flex;
         align-items: center;
         cursor: pointer;
+    }
+    .custom-upload {
+        display: flex;
+        box-sizing: border-box;
+        label {
+            box-sizing: border-box;
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border: 1px solid #333;
+            font-size: 16px;
+        }
+        [type="file"] {
+            width: 0;
+            height: 0;
+            opacity: 0;
+            font-size: 0;
+        }
+        &::after {
+            content: attr(data-filename);
+            flex: 1 0 0;
+            box-sizing: border-box;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border: 1px solid transparent;
+        }
     }
     // 自定义的 radio 样式
     .custom-radio[type="radio"] {
@@ -243,6 +285,19 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script is:inline>
+    // 自定义的上传
+    function uploadFile() {
+        const uploadFile = document.querySelectorAll(".custom-upload input");
+        uploadFile.forEach((item) => {
+            item.addEventListener("change", function(event) {
+                const filename = event.target.files[0].name;
+                this.parentNode.setAttribute("data-filename", filename);
+            });
+        });
+    }
+    uploadFile();
+
+    // 自定义的 select
     class CustomSelect {
         constructor(selectDom) {
             this.event = new Event("change", {
@@ -255,7 +310,7 @@ import Layout from "../layouts/Layout.astro";
             selectElements.forEach((item, index) => {
                 const selectElement = item.querySelector("select");
                 const isDisabled = item.classList.contains("disabled");
-                if (isDisabled){
+                if (isDisabled) {
                     selectElement.setAttribute("disabled", "true");
                 }
                 this.createSelect(selectElement);

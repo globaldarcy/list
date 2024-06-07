@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="V1 Photo Justified Layout">
@@ -101,11 +101,59 @@ import Layout from '../layouts/Layout.astro';
     </main>
 </Layout>
 
-<style>
+<style lang="scss">
+    @function vw($px, $design-width: 1920) {
+        @return calc($px / $design-width) * 100vw;
+    }
+    // 文字溢出隐藏显示...
+    @mixin text-ellipsis($line: 1) {
+        @if $line==1 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        } @else {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            display: -webkit-box;
+            -webkit-line-clamp: $line;
+            -webkit-box-orient: vertical;
+        }
+    }
+
+    @mixin disabled($grey: false) {
+        pointer-events: none;
+        user-select: none;
+        @if ($grey == true) {
+            filter: grayscale(1);
+        }
+    }
+
+
+    @mixin visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+    @mixin border-radius($param: vw(10)) {
+        overflow: hidden;
+        border-radius: $param;
+        transform: rotate(0deg);
+    }
+
     #container {
         margin: 0 auto;
-        max-width: 900px;
+        width: 100%;
+        // width: 900px;
         padding: 80px 0 150px;
+        @media screen and (max-width: 750px) {
+            width: 100%;
+        }
     }
     .grid {
         position: relative;
@@ -116,74 +164,19 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .grid-item {
-        height: 0;
+        width: vw(300);
         overflow: hidden;
+        @media screen and (max-width: 750px) {
+            width: vw(375, 750);
+        }
     }
 
     .grid-item img {
         width: 100%;
         display: block;
         background-color: #f5f8fa;
+        @include border-radius;
     }
 </style>
 
-<script>
-    function waterfall(grid, item, column) {
-        const container = document.getElementById('container');
-        const containerWidth = container.clientWidth;
-        const $grid = document.querySelector(grid);
-        const $item = Array.from(document.querySelectorAll(item));
-        const $gap = window.getComputedStyle($grid).rowGap;
-
-        const gapValue = parseFloat($gap);
-        const adjustedContainerWidth = containerWidth - (column - 1) * gapValue;
-
-        if ($item.length % column !== 0) {
-            const additionalItemsNeeded = column - ($item.length % column);
-            for (let n = 0; n < additionalItemsNeeded; n++) {
-                const div = document.createElement('div');
-                div.className = 'grid-item';
-                $grid.appendChild(div);
-            }
-        }
-
-        const updatedItems = Array.from(document.querySelectorAll(item));
-
-        for (let i = 0; i < updatedItems.length; i += column) {
-            const hightArray = [];
-            let sumRatio = 0;
-            for (let j = i; j < i + column && j < updatedItems.length; j++) {
-                const img = updatedItems[j].querySelector('img');
-                // console.log(img.naturalWidth, img.naturalHeight);
-                const ratio = img ? img.naturalWidth / img.naturalHeight : 1.5;
-                updatedItems[j].style.setProperty('--ratio', ratio);
-                sumRatio += +updatedItems[j].style.getPropertyValue('--ratio');
-            }
-
-            const widthRatio = adjustedContainerWidth / sumRatio;
-            for (let k = i; k < i + column && k < updatedItems.length; k++) {
-                updatedItems[k].style.height = '';
-                const width = (widthRatio * +updatedItems[k].style.getPropertyValue('--ratio')).toFixed(0) + 'px';
-                updatedItems[k].style.width = width;
-                const img = updatedItems[k].querySelector('img');
-                const height = img ? img.offsetHeight : 1000;
-                hightArray.push(height);
-            }
-
-            const minHeight = Math.min(...hightArray);
-            for (let l = i; l < i + column && l < updatedItems.length; l++) {
-                updatedItems[l].style.height = minHeight.toFixed(0) + 'px';
-            }
-        }
-    }
-
-    // waterfall('.grid', '.grid-item', 3);
-
-    document.addEventListener('DOMContentLoaded', function () {
-        waterfall('.grid', '.grid-item', 3);
-    });
-
-    window.addEventListener('resize', function () {
-        waterfall('.grid', '.grid-item', 3);
-    });
-</script>
+<script></script>

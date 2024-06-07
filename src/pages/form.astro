@@ -290,8 +290,15 @@ import Layout from "../layouts/Layout.astro";
         const uploadFile = document.querySelectorAll(".custom-upload input");
         uploadFile.forEach((item) => {
             item.addEventListener("change", function(event) {
-                const filename = event.target.files[0].name;
-                this.parentNode.setAttribute("data-filename", filename);
+                    const parentElement = item.parentNode;
+                    let defaultText = parentElement.getAttribute("data-text");
+                    if (defaultText == null) {
+                        defaultText = parentElement.getAttribute("data-filename");
+                        parentElement.setAttribute("data-text", defaultText);
+                    }
+                    defaultText = parentElement.getAttribute("data-text");
+                    const fileName = event.target.files.length > 0 ? event.target.files[0].name : defaultText;
+                    parentElement.setAttribute("data-filename", fileName);
             });
         });
     }

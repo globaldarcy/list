@@ -4,8 +4,9 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="Photo">
     <main>
-        <div class="grid">
-            <div class="grid-item">
+        <div class="inline-block* text-center max-sm:text-left">
+            hello world
+            <div class="group">
                 <img src="img/photos/1.jpg" />
             </div>
             <div class="grid-item">
@@ -46,49 +47,6 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style lang="scss">
-    @function vw($px, $design-width: 1920) {
-        @return calc($px / $design-width) * 100vw;
-    }
-    // 文字溢出隐藏显示...
-    @mixin text-ellipsis($line: 1) {
-        @if $line==1 {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        } @else {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            word-break: break-all;
-            display: -webkit-box;
-            -webkit-line-clamp: $line;
-            -webkit-box-orient: vertical;
-        }
-    }
-
-    @mixin disabled($grey: false) {
-        pointer-events: none;
-        user-select: none;
-        @if ($grey == true) {
-            filter: grayscale(1);
-        }
-    }
-
-    @mixin sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        margin: -1px;
-        padding: 0;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        border: 0;
-    }
-
-    @mixin border-radius($param: vw(10)) {
-        overflow: hidden;
-        border-radius: $param;
-        transform: rotate(0deg);
-    }
 </style>
 
 <script>
@@ -101,6 +59,7 @@ import Layout from "../layouts/Layout.astro";
     //         console.log("横屏", window.screen.orientation);
     //     }
     // })
+
     // 方法二：使用 window.matchMedia
     function checkOrientation() {
         if (window.matchMedia("(orientation: portrait)").matches) {

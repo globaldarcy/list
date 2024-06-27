@@ -1228,10 +1228,15 @@ import SellLayout from "../../layouts/sellLayout.astro";
     class UIData {
         constructor(goods) {
             var uiGoods = [];
-            for (let i = 0; i < goods.length; i++) {
-                var uig = new UIGoods(goods[i].foods[0]);
+            // for (let i = 0; i < goods.length; i++) {
+            //     var uig = new UIGoods(goods[i].foods[0]);
+            //     uiGoods.push(uig);
+            // }
+            goods.forEach((good) => {
+                const uig = new UIGoods(good.foods[0]);
                 uiGoods.push(uig);
-            }
+            });
+
             this.uiGoods = uiGoods;
             this.deliveryThreshold = 30;
             this.deliveryPrice = 5;
@@ -1240,14 +1245,21 @@ import SellLayout from "../../layouts/sellLayout.astro";
 
         // 得到总价
         getTotalPrice() {
-            var sum = 0;
-            for (let i = 0; i < this.uiGoods.length; i++) {
-                if (this.uiGoods[i].isChoose()) {
-                    sum += this.uiGoods[i].getTotalPrice();
+            // var total = 0;
+            // for (let i = 0; i < this.uiGoods.length; i++) {
+            //     if (this.uiGoods[i].isChoose()) {
+            //         total += this.uiGoods[i].getTotalPrice();
+            //     }
+            //     // this.total += total;
+            // }
+            // return total;
+
+            return this.uiGoods.reduce((sum, uig) => {
+                if (uig.isChoose()) {
+                    return sum + uig.getTotalPrice();
                 }
-                // this.total += sum;
-            }
-            return sum;
+                return sum;
+            }, 0);
         }
 
         // 增加数量
@@ -1262,11 +1274,15 @@ import SellLayout from "../../layouts/sellLayout.astro";
 
         // 得到总选中的数量
         getTotalChooseNumber() {
-            var sum = 0;
-            for (let i = 0; i < this.uiGoods.length; i++) {
-                sum += this.uiGoods[i].choose;
-            }
-            return sum;
+            // var sum = 0;
+            // for (let i = 0; i < this.uiGoods.length; i++) {
+            //     sum += this.uiGoods[i].choose;
+            // }
+            // return sum;
+
+            return this.uiGoods.reduce((sum, uig) => {
+                return sum + uig.choose;
+            }, 0);
         }
 
         // 购物车是否有选中的商品

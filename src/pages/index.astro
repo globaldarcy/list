@@ -1,70 +1,126 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="事件循环">
     <main>
-        <input type="text" placeholder="First input" tabindex="2">
-        <input type="text" placeholder="Second input" tabindex="1">
-        <input type="text" placeholder="Third input" tabindex="3">
-        <div tabindex="0">可聚焦的 div</div>
-        <button tabindex="-1">不可通过 Tab 键聚焦的按钮</button>
+        <apple-pay-button buttonstyle="black" type="plain" locale="en-US" onclick="onApplePayButtonClicked()"></apple-pay-button>
+        <button onclick="onApplePayButtonClicked()">Pay</button>
     </main>
 </Layout>
 
 <style lang="scss">
-    /* styles.css */
-    ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .menu-item {
-        position: relative;
-    }
-
-    .submenu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: #fff;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    .menu-item:focus .submenu {
-        display: block;
-    }
-
-    .menu-item .submenu li {
-        padding: 8px 16px;
+    apple-pay-button {
+        --apple-pay-button-width: 150px;
+        --apple-pay-button-height: 30px;
+        --apple-pay-button-border-radius: 3px;
+        --apple-pay-button-padding: 0px 0px;
+        --apple-pay-button-box-sizing: border-box;
     }
 </style>
 
 <script is:inline>
-    // script.js
-    document.addEventListener("DOMContentLoaded", function () {
-        const menuItems = document.querySelectorAll(".menu-item");
+    async function onApplePayButtonClicked() {
+        // Consider falling back to Apple Pay JS if Payment Request is not available.
+        if (!PaymentRequest) {
+            return;
+        }
 
-        menuItems.forEach((item) => {
-            item.addEventListener("focus", () => {
-                item.querySelector(".submenu").style.display = "block";
-            });
+        try {
+            // Define PaymentMethodData
+            const paymentMethodData = [
+                {
+                    supportedMethods: 'https://apple.com/apple-pay',
+                    data: {
+                        version: 3,
+                        merchantIdentifier: 'merchant.com.apdemo',
+                        merchantCapabilities: ['supports3DS'],
+                        supportedNetworks: ['amex', 'discover', 'masterCard', 'visa'],
+                        countryCode: 'US',
+                    },
+                },
+            ];
+            // Define PaymentDetails
+            const paymentDetails = {
+                total: {
+                    label: 'Demo (Card is not charged)',
+                    amount: {
+                        value: '27.50',
+                        currency: 'USD',
+                    },
+                },
+            };
+            // Define PaymentOptions
+            const paymentOptions = {
+                requestPayerName: false,
+                requestBillingAddress: false,
+                requestPayerEmail: false,
+                requestPayerPhone: false,
+                requestShipping: false,
+                shippingType: 'shipping',
+            };
 
-            item.addEventListener("blur", () => {
-                // item.querySelector(".submenu").style.display = "none";
-            });
+            // Create PaymentRequest
+            const request = new PaymentRequest(paymentMethodData, paymentDetails, paymentOptions);
 
-            // Handle keyboard navigation within the submenu
-            item.querySelectorAll(".submenu li").forEach((subItem) => {
-                subItem.addEventListener("blur", (e) => {
-                    // If the focus is lost from the last submenu item, hide the submenu
-                    if (!item.contains(e.relatedTarget)) {
-                        // item.querySelector(".submenu").style.display = "none";
-                    }
-                });
-            });
-        });
-    });
+            request.onmerchantvalidation = (event) => {
+                // Call your own server to request a new merchant session.
+                const merchantSessionPromise = validateMerchant();
+                event.complete(merchantSessionPromise);
+            };
+
+            request.onpaymentmethodchange = (event) => {
+                if (event.methodDetails.type !== undefined) {
+                    // Define PaymentDetailsUpdate based on the selected payment method.
+                    // No updates or errors needed, pass an object with the same total.
+                    const paymentDetailsUpdate = {
+                        total: paymentDetails.total,
+                    };
+                    event.updateWith(paymentDetailsUpdate);
+                } else if (event.methodDetails.couponCode !== undefined) {
+                    // Define PaymentDetailsUpdate based on the coupon code.
+                    const total = calculateTotal(event.methodDetails.couponCode);
+                    const displayItems = calculateDisplayItem(event.methodDetails.couponCode);
+                    const shippingOptions = calculateShippingOptions(event.methodDetails.couponCode);
+                    const error = calculateError(event.methodDetails.couponCode);
+
+                    event.updateWith({
+                        total: total,
+                        displayItems: displayItems,
+                        shippingOptions: shippingOptions,
+                        modifiers: [
+                            {
+                                data: {
+                                    additionalShippingMethods: shippingOptions,
+                                },
+                            },
+                        ],
+                        error: error,
+                    });
+                }
+            };
+
+            request.onshippingoptionchange = (event) => {
+                // Define PaymentDetailsUpdate based on the selected shipping option.
+                // No updates or errors needed, pass an object with the same total.
+                const paymentDetailsUpdate = {
+                    total: paymentDetails.total,
+                };
+                event.updateWith(paymentDetailsUpdate);
+            };
+
+            request.onshippingaddresschange = (event) => {
+                // Define PaymentDetailsUpdate based on a shipping address change.
+                const paymentDetailsUpdate = {};
+                event.updateWith(paymentDetailsUpdate);
+            };
+
+            alert(request.onmerchantvalidation);
+            const response = await request.show();
+            const status = 'success';
+            await response.complete(status);
+        } catch (e) {
+            // Handle errors
+        }
+    }
 </script>
